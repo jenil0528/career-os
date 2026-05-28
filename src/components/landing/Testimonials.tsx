@@ -79,15 +79,15 @@ function TestimonialCard({
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
         onMouseEnter={() => setIsHovered(true)}
-        className="group relative overflow-hidden rounded-2xl border border-white/[0.06] bg-white/[0.02] p-6 sm:p-7 backdrop-blur-sm"
+        className="group relative overflow-hidden rounded-2xl border border-outline-variant bg-surface p-6 sm:p-7 shadow-sm transition-all"
         style={{
           transform: `rotateX(${tilt.x}deg) rotateY(${tilt.y}deg) translateZ(${isHovered ? 10 : 0}px)`,
           transformStyle: "preserve-3d",
           transition: "transform 0.3s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.3s ease, border-color 0.3s ease",
           boxShadow: isHovered
-            ? `0 20px 50px rgba(0,0,0,0.3), 0 0 30px ${t.accentColor}10`
-            : "0 4px 24px rgba(0,0,0,0.15)",
-          borderColor: isHovered ? `${t.accentColor}30` : "rgba(255,255,255,0.06)",
+            ? `0 20px 50px rgba(0,0,0,0.1), 0 0 30px ${t.accentColor}10`
+            : "0 4px 24px rgba(0,0,0,0.05)",
+          borderColor: isHovered ? `${t.accentColor}30` : "var(--color-outline-variant)",
         }}
       >
         {/* Holographic */}
@@ -98,7 +98,7 @@ function TestimonialCard({
 
         {/* Quote icon — 3D depth */}
         <div style={{ transform: "translateZ(30px)", transformStyle: "preserve-3d" }}>
-          <Quote className="mb-4 h-8 w-8 text-white/[0.06]" />
+          <Quote className="mb-4 h-8 w-8 text-outline-variant" />
         </div>
 
         {/* Rating */}
@@ -109,12 +109,12 @@ function TestimonialCard({
         </div>
 
         {/* Quote Text */}
-        <p className="mb-6 text-sm leading-relaxed text-slate-300" style={{ transform: "translateZ(15px)", transformStyle: "preserve-3d" }}>
+        <p className="mb-6 text-sm leading-relaxed text-on-surface-variant font-medium" style={{ transform: "translateZ(15px)", transformStyle: "preserve-3d" }}>
           &ldquo;{t.quote}&rdquo;
         </p>
 
         {/* Divider */}
-        <div className="h-px w-full bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+        <div className="h-px w-full bg-outline-variant opacity-50" />
 
         {/* Author — 3D pop */}
         <div className="mt-6 flex items-center gap-3" style={{ transform: "translateZ(25px)", transformStyle: "preserve-3d" }}>
@@ -125,8 +125,8 @@ function TestimonialCard({
             {t.initials}
           </div>
           <div>
-            <h4 className="text-sm font-semibold text-white">{t.name}</h4>
-            <p className="text-xs text-slate-500">{t.role}</p>
+            <h4 className="text-sm font-semibold text-on-surface">{t.name}</h4>
+            <p className="text-xs text-on-surface-variant">{t.role}</p>
           </div>
         </div>
       </div>
@@ -152,14 +152,14 @@ export default function Testimonials() {
           transition={{ duration: 0.6 }}
           className="mx-auto max-w-2xl text-center"
         >
-          <span className="mb-4 inline-block rounded-full border border-green-500/20 bg-green-500/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-green-400">
+          <span className="mb-4 inline-block rounded-full border border-primary/20 bg-primary/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-primary">
             Testimonials
           </span>
-          <h2 className="mt-4 text-3xl font-bold tracking-tight font-[family-name:var(--font-space-grotesk)] sm:text-4xl lg:text-5xl">
+          <h2 className="mt-4 text-3xl font-bold tracking-tight font-[family-name:var(--font-space-grotesk)] sm:text-4xl lg:text-5xl text-on-surface">
             Loved by{" "}
-            <span className="gradient-text">10,000+ Students</span>
+            <span className="text-primary font-black">10,000+ Students</span>
           </h2>
-          <p className="mt-4 text-lg text-slate-400 leading-relaxed">
+          <p className="mt-4 text-lg text-on-surface-variant leading-relaxed">
             Real stories from real students who landed their dream placements.
           </p>
         </motion.div>

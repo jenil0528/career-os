@@ -47,14 +47,14 @@ function FAQItem({
   onToggle: () => void;
 }) {
   return (
-    <div className="border-b border-white/[0.06] last:border-b-0">
+    <div className="border-b border-outline-variant last:border-b-0">
       <button
         onClick={onToggle}
-        className="flex w-full items-center justify-between gap-4 py-5 text-left transition-colors hover:text-white"
+        className="flex w-full items-center justify-between gap-4 py-5 text-left transition-colors hover:bg-surface-container/50 px-2 rounded-lg"
       >
         <span
           className={`text-sm font-medium sm:text-base ${
-            isOpen ? "text-white" : "text-slate-300"
+            isOpen ? "text-on-surface font-semibold" : "text-on-surface-variant"
           }`}
         >
           {faq.question}
@@ -62,8 +62,8 @@ function FAQItem({
         <div
           className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-lg transition-all ${
             isOpen
-              ? "bg-blue-500/20 text-blue-400"
-              : "bg-white/5 text-slate-500"
+              ? "bg-primary/20 text-primary"
+              : "bg-surface-variant text-on-surface-variant"
           }`}
         >
           {isOpen ? (
@@ -83,7 +83,7 @@ function FAQItem({
             transition={{ duration: 0.3, ease: [0.42, 0, 0.58, 1] }}
             className="overflow-hidden"
           >
-            <p className="pb-5 pr-12 text-sm leading-relaxed text-slate-400">
+            <p className="pb-5 px-2 pr-12 text-sm leading-relaxed text-on-surface-variant">
               {faq.answer}
             </p>
           </motion.div>
@@ -109,14 +109,14 @@ export default function FAQ() {
           transition={{ duration: 0.6 }}
           className="mx-auto max-w-2xl text-center"
         >
-          <span className="mb-4 inline-block rounded-full border border-purple-500/20 bg-purple-500/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-purple-400">
+          <span className="mb-4 inline-block rounded-full border border-primary/20 bg-primary/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-primary">
             FAQ
           </span>
-          <h2 className="mt-4 text-3xl font-bold tracking-tight font-[family-name:var(--font-space-grotesk)] sm:text-4xl">
+          <h2 className="mt-4 text-3xl font-bold tracking-tight font-[family-name:var(--font-space-grotesk)] sm:text-4xl text-on-surface">
             Frequently Asked{" "}
-            <span className="gradient-text">Questions</span>
+            <span className="text-primary font-black">Questions</span>
           </h2>
-          <p className="mt-4 text-lg text-slate-400">
+          <p className="mt-4 text-lg text-on-surface-variant">
             Everything you need to know about CareerOS.
           </p>
         </motion.div>
@@ -126,7 +126,7 @@ export default function FAQ() {
           initial={{ opacity: 0, y: 40 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className="glass-strong mt-12 overflow-hidden rounded-2xl px-6 sm:px-8"
+          className="bg-surface border border-outline-variant mt-12 overflow-hidden rounded-2xl px-6 sm:px-8 shadow-sm"
         >
           {faqs.map((faq, index) => (
             <FAQItem

@@ -38,25 +38,25 @@ const socialLinks = [
 
 export default function Footer() {
   return (
-    <footer className="relative">
+    <footer className="relative bg-background">
       {/* Gradient separator */}
-      <div className="h-px w-full bg-gradient-to-r from-transparent via-blue-500/50 to-transparent" />
+      <div className="h-px w-full bg-outline-variant" />
 
-      <div className="bg-slate-950/50 py-16">
+      <div className="bg-surface-container-low py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="grid gap-12 sm:grid-cols-2 lg:grid-cols-5">
             {/* Brand Column */}
             <div className="lg:col-span-1">
               <div className="flex items-center gap-2 mb-4">
-                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-blue-500 to-purple-600">
-                  <Sparkles className="h-4 w-4 text-white" />
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary-container">
+                  <Sparkles className="h-4 w-4 text-primary" />
                 </div>
                 <span className="text-lg font-bold font-[family-name:var(--font-space-grotesk)]">
-                  <span className="gradient-text">Career</span>
-                  <span className="text-white">OS</span>
+                  <span className="text-primary font-black">Exec</span>
+                  <span className="text-on-surface">Prep</span>
                 </span>
               </div>
-              <p className="text-sm leading-relaxed text-slate-500">
+              <p className="text-sm leading-relaxed text-on-surface-variant">
                 Your AI-powered placement platform. Ace interviews, optimize
                 resumes, and build your career.
               </p>
@@ -66,7 +66,7 @@ export default function Footer() {
                 {socialLinks.map((social) => (
                   <button
                     key={social.label}
-                    className="flex h-9 w-9 items-center justify-center rounded-lg bg-white/5 text-slate-500 transition-all hover:bg-white/10 hover:text-white"
+                    className="flex h-9 w-9 items-center justify-center rounded-lg bg-surface border border-outline-variant text-on-surface-variant transition-all hover:bg-surface-container hover:text-primary"
                     aria-label={social.label}
                   >
                     {social.icon}
@@ -78,13 +78,13 @@ export default function Footer() {
             {/* Link Columns */}
             {Object.entries(footerLinks).map(([category, links]) => (
               <div key={category}>
-                <h3 className="mb-4 text-sm font-semibold text-white">
+                <h3 className="mb-4 text-sm font-semibold text-on-surface">
                   {category}
                 </h3>
                 <ul className="space-y-3">
                   {links.map((link) => (
                     <li key={link}>
-                      <span className="cursor-pointer text-sm text-slate-500 transition-colors hover:text-slate-300">
+                      <span className="cursor-pointer text-sm text-on-surface-variant transition-colors hover:text-primary">
                         {link}
                       </span>
                     </li>
@@ -95,11 +95,11 @@ export default function Footer() {
           </div>
 
           {/* Bottom Row */}
-          <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-white/[0.06] pt-8 sm:flex-row">
-            <p className="text-sm text-slate-600">
-              © {new Date().getFullYear()} CareerOS. All rights reserved.
+          <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-outline-variant pt-8 sm:flex-row">
+            <p className="text-sm text-on-surface-variant font-medium">
+              © {new Date().getFullYear()} ExecPrep. All rights reserved.
             </p>
-            <p className="text-sm text-slate-600">
+            <p className="text-sm text-on-surface-variant font-medium">
               Built with ❤️ for students everywhere.
             </p>
           </div>

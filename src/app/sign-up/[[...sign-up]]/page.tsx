@@ -2,92 +2,108 @@
 
 import Link from "next/link";
 import { SignUpCompat as SignUp } from "@/lib/auth-shim";
-import { BrainCircuit, CheckCircle2, TrendingUp } from "lucide-react";
+import { dark } from "@clerk/themes";
+import { motion } from "motion/react";
 
 export default function SignUpPage() {
+  const fadeUp = {
+    hidden: { opacity: 0, y: 40, filter: "blur(4px)" },
+    visible: { 
+      opacity: 1, 
+      y: 0, 
+      filter: "blur(0px)",
+      transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] } 
+    }
+  };
+
+  const staggerContainer = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: { staggerChildren: 0.15 }
+    }
+  };
+
   return (
-    <main className="min-h-screen bg-[#0a0a0f] text-slate-100">
-      <div className="grid min-h-screen lg:grid-cols-[0.95fr_1.05fr]">
-        <section className="hidden border-r border-white/10 bg-slate-950 px-10 py-10 lg:flex lg:flex-col relative overflow-hidden">
-          <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMSIgY3k9IjEiIHI9IjEiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC4wNSkiLz48L3N2Zz4=')] opacity-30" />
-          
-          <Link href="/" className="relative z-10 flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 shadow-lg shadow-blue-500/20">
-              <BrainCircuit className="h-5 w-5 text-white" />
+    <main className="min-h-screen bg-surface-container-lowest text-on-surface flex flex-col items-center justify-center relative overflow-hidden font-body-md py-12">
+      {/* Background Grid & Telemetry */}
+      <div className="absolute inset-0 grid-bg opacity-40 pointer-events-none" />
+      
+      <div className="absolute inset-0 pointer-events-none font-mono-label text-[10px] text-outline opacity-20 overflow-hidden">
+        <div className="absolute top-10 left-10 telemetry-flicker" style={{ animationDuration: "1.2s" }}>AUTH_GATEWAY::0x4F92A</div>
+        <div className="absolute bottom-1/4 left-1/4 telemetry-flicker" style={{ animationDuration: "2.1s" }}>HANDSHAKE::SECURE</div>
+        <div className="absolute top-1/4 right-20 telemetry-flicker" style={{ animationDuration: "0.8s" }}>VERIFYING_CREDENTIALS</div>
+      </div>
+
+      <motion.div 
+        variants={staggerContainer}
+        initial="hidden"
+        animate="visible"
+        className="relative z-10 w-full max-w-md px-6 flex flex-col items-center"
+      >
+        {/* Logo / Header */}
+        <motion.div variants={fadeUp} className="w-full">
+          <Link href="/" className="mb-8 flex flex-col items-center justify-center gap-4 group">
+            <div className="flex h-16 w-16 items-center justify-center border-4 border-primary bg-surface shadow-[6px_6px_0px_0px_#10b981] group-hover:translate-x-[2px] group-hover:translate-y-[2px] group-hover:shadow-[4px_4px_0px_0px_#10b981] transition-all">
+              <span className="material-symbols-outlined text-[32px] text-primary">terminal</span>
             </div>
-            <span className="text-xl font-bold tracking-tight font-[family-name:var(--font-space-grotesk)] text-white">CareerOS</span>
+            <span className="text-4xl font-black font-headline-md tracking-tight text-primary">CareerOS</span>
           </Link>
-
-          <div className="relative z-10 flex flex-1 flex-col justify-center">
-            <p className="text-sm font-semibold uppercase tracking-[0.18em] text-purple-400">
-              Join CareerOS
-            </p>
-            <h1 className="mt-4 max-w-xl text-5xl font-bold tracking-tight text-white font-[family-name:var(--font-space-grotesk)]">
-              Your AI-powered path to the perfect role.
-            </h1>
-            <p className="mt-5 max-w-lg text-base leading-7 text-slate-400">
-              Stop guessing what recruiters want. Let our AI tailor your resume, simulate interviews, and build your custom roadmap.
-            </p>
-
-            <div className="mt-10 space-y-4">
-              {[
-                "AI resume optimization for ATS matching",
-                "Real-time voice mock interviews with feedback",
-                "Personalized step-by-step career roadmaps",
-                "Application and progress tracking",
-              ].map((feature, i) => (
-                <div key={i} className="flex items-start gap-3">
-                  <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-purple-500/20">
-                    <CheckCircle2 className="h-4 w-4 text-purple-400" />
-                  </div>
-                  <span className="text-sm text-slate-300 pt-0.5">{feature}</span>
-                </div>
-              ))}
-            </div>
+        </motion.div>
+        
+        <motion.div variants={fadeUp} className="w-full mb-8 text-center">
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-surface border-2 border-outline-variant shadow-[4px_4px_0px_0px_#10b981]">
+            <span className="w-2 h-2 bg-[#10b981] animate-pulse"></span>
+            <span className="font-mono-label text-mono-label text-primary uppercase tracking-widest">
+              Profile Initialization
+            </span>
           </div>
-        </section>
+        </motion.div>
 
-        <section className="flex items-center justify-center px-5 py-10 sm:px-8 relative bg-[#0a0a0f]">
-          <div className="absolute inset-0 aurora-bg opacity-30" />
-          
-          <div className="w-full max-w-md relative z-10 flex flex-col items-center">
-            <Link href="/" className="mb-8 flex items-center gap-3 lg:hidden">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-purple-600">
-                <BrainCircuit className="h-5 w-5 text-white" />
-              </div>
-              <span className="text-xl font-bold tracking-tight text-white">CareerOS</span>
-            </Link>
-
+        {/* Clerk Sign Up component styled to match */}
+        <motion.div variants={fadeUp} className="w-full">
+          <div className="p-1 bg-surface border-2 border-outline-variant shadow-[8px_8px_0px_0px_#10b981]">
             <SignUp 
               path="/sign-up"
               appearance={{
+                baseTheme: dark,
+                variables: {
+                  colorPrimary: "#10b981",
+                  colorBackground: "transparent",
+                  colorText: "#ffffff",
+                  colorTextSecondary: "#94a3b8",
+                  colorInputBackground: "transparent",
+                  colorInputText: "#ffffff",
+                },
                 elements: {
                   rootBox: "w-full",
-                  card: "bg-slate-900/80 backdrop-blur-xl border border-white/10 shadow-2xl rounded-2xl w-full max-w-full",
-                  headerTitle: "text-white font-[family-name:var(--font-space-grotesk)] text-2xl",
-                  headerSubtitle: "text-slate-400",
-                  socialButtonsBlockButton: "border border-white/10 hover:bg-white/5 text-slate-200 transition-colors",
-                  socialButtonsBlockButtonText: "font-semibold",
-                  dividerLine: "bg-white/10",
-                  dividerText: "text-slate-500",
-                  formFieldLabel: "text-slate-300",
-                  formFieldInput: "bg-black/50 border border-white/10 text-white rounded-lg focus:border-blue-500 transition-colors",
-                  formButtonPrimary: "bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white border-none shadow-lg shadow-blue-500/20",
-                  footerActionText: "text-slate-400",
-                  footerActionLink: "text-purple-400 hover:text-purple-300",
-                  identityPreviewText: "text-slate-200",
-                  identityPreviewEditButton: "text-purple-400 hover:text-purple-300",
+                  card: "bg-transparent border-none shadow-none w-full max-w-full p-8",
+                  headerTitle: "font-headline-md text-white text-2xl font-bold uppercase tracking-wide",
+                  headerSubtitle: "font-body-sm text-on-surface-variant mt-2",
+                  socialButtonsBlockButton: "border-2 border-outline-variant hover:bg-surface-container bg-surface-container-lowest text-white rounded-none transition-all hover:-translate-y-0.5",
+                  socialButtonsBlockButtonText: "font-label-md text-white font-bold",
+                  dividerLine: "bg-outline-variant",
+                  dividerText: "font-mono-label text-on-surface-variant px-4 bg-transparent",
+                  formFieldLabel: "font-label-sm text-on-surface-variant uppercase tracking-wider mb-2",
+                  formFieldInput: "bg-surface-container-lowest border-2 border-outline-variant text-white rounded-none focus:border-primary focus:ring-0 transition-colors p-3 font-mono-label h-12",
+                  formButtonPrimary: "bg-primary hover:bg-primary/90 text-on-primary font-label-md font-bold uppercase tracking-wider rounded-none border-none py-3 mt-4 h-12 transition-all hover:-translate-y-0.5",
+                  footerActionText: "font-body-sm text-on-surface-variant",
+                  footerActionLink: "font-label-md text-primary font-bold hover:underline",
+                  identityPreviewText: "font-mono-label text-white",
+                  identityPreviewEditButton: "text-primary hover:text-white",
+                  formFieldInputShowPasswordButton: "text-on-surface-variant hover:text-white",
                 }
               }}
             />
-
-            <div className="mt-8 flex items-center justify-center gap-2 text-sm text-slate-500">
-              <TrendingUp className="h-4 w-4 text-purple-400" />
-              Join 10,000+ students landing jobs faster
-            </div>
           </div>
-        </section>
-      </div>
+        </motion.div>
+
+        <motion.div variants={fadeUp} className="mt-12 pt-6 border-t border-outline-variant w-full text-center">
+          <span className="font-mono-label text-[10px] text-on-surface-variant uppercase tracking-widest">
+            CareerOS Systems © 2026
+          </span>
+        </motion.div>
+      </motion.div>
     </main>
   );
 }

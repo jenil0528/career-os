@@ -374,6 +374,16 @@ export default function JobMatchPage() {
       return 0;
     }) || [];
 
+  const filteredAvailableJobs = availableJobs
+    .filter(j => filterWorkMode === "all" || j.workMode === filterWorkMode || j.work_mode === filterWorkMode)
+    .filter(j => 
+      searchQuery === "" || 
+      (j.role && j.role.toLowerCase().includes(searchQuery.toLowerCase())) || 
+      (j.company && j.company.toLowerCase().includes(searchQuery.toLowerCase())) ||
+      ((j.required_skills && j.required_skills.some((s: string) => s.toLowerCase().includes(searchQuery.toLowerCase()))) ||
+       (j.requiredSkills && j.requiredSkills.some((s: string) => s.toLowerCase().includes(searchQuery.toLowerCase()))))
+    );
+
   // Radar chart data
   const radarData = result?.skillGaps.map(sg => ({
     skill: sg.skill,
@@ -461,11 +471,57 @@ export default function JobMatchPage() {
                     <Briefcase className="w-6 h-6 text-primary" />
                     <h2 className="text-2xl font-bold text-on-surface font-[family-name:var(--font-space-grotesk)]">Latest Tech Jobs</h2>
                   </div>
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    {availableJobs.map((job, i) => (
-                      <JobCard key={job.id} job={job} index={i} />
-                    ))}
+                  
+                  {/* Filters and Search */}
+                  <div className="flex flex-col gap-4 mb-6 sticky top-[80px] z-30 p-4 bg-background/80 backdrop-blur-md rounded-2xl border border-outline-variant shadow-sm">
+                    {/* Search Bar */}
+                    <div className="relative flex items-center w-full h-12 rounded-xl focus-within:shadow-md bg-surface border border-outline-variant overflow-hidden transition-shadow">
+                      <div className="grid place-items-center h-full w-12 text-on-surface-variant">
+                        <Search className="h-5 w-5" />
+                      </div>
+                      <input
+                        className="peer h-full w-full outline-none text-sm text-on-surface bg-transparent pr-4"
+                        type="text"
+                        placeholder="Search jobs by title, company, or skill..."
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                      />
+                    </div>
+                    
+                    {/* Work Mode */}
+                    <div className="flex flex-wrap items-center gap-3">
+                      <div className="flex items-center gap-2 text-sm text-on-surface-variant font-medium">
+                        <Filter className="h-4 w-4" /> Filter:
+                      </div>
+                      {["all", "Remote", "Hybrid", "Onsite"].map((mode) => (
+                        <button
+                          key={mode}
+                          onClick={() => setFilterWorkMode(mode)}
+                          className={cn(
+                            "px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer",
+                            filterWorkMode === mode
+                              ? "bg-primary text-on-primary shadow-sm"
+                              : "bg-surface-variant text-on-surface-variant hover:bg-surface-container-highest hover:text-on-surface"
+                          )}
+                        >
+                          {mode === "all" ? "All Modes" : mode}
+                        </button>
+                      ))}
+                    </div>
                   </div>
+
+                  {filteredAvailableJobs.length === 0 ? (
+                    <div className="text-center py-12 text-on-surface-variant">
+                      <Search className="h-10 w-10 mx-auto mb-3 opacity-20" />
+                      <p>No jobs found matching your search.</p>
+                    </div>
+                  ) : (
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                      {filteredAvailableJobs.map((job, i) => (
+                        <JobCard key={job.id} job={job} index={i} />
+                      ))}
+                    </div>
+                  )}
                 </div>
               )}
             </motion.div>
@@ -579,14 +635,14 @@ export default function JobMatchPage() {
                           className={cn(
                             "px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer",
                             filterWorkMode === mode
-                              ? "bg-blue-500/20 text-blue-400 border border-blue-500/30"
-                              : "bg-white/5 text-slate-400 border border-white/10 hover:bg-white/10"
+                              ? "bg-primary text-on-primary shadow-sm"
+                              : "bg-surface-variant text-on-surface-variant hover:bg-surface-container-highest hover:text-on-surface"
                           )}
                         >
                           {mode === "all" ? "All Modes" : mode}
                         </button>
                       ))}
-                      <div className="ml-auto flex items-center gap-2 text-sm text-slate-400">
+                      <div className="ml-auto flex items-center gap-2 text-sm text-on-surface-variant">
                         Sort:
                         {(["match", "readiness"] as const).map((s) => (
                           <button
@@ -595,8 +651,8 @@ export default function JobMatchPage() {
                             className={cn(
                               "px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer capitalize",
                               sortBy === s
-                                ? "bg-purple-500/20 text-purple-400 border border-purple-500/30"
-                                : "bg-white/5 text-slate-400 border border-white/10 hover:bg-white/10"
+                                ? "bg-primary text-on-primary shadow-sm"
+                                : "bg-surface-variant text-on-surface-variant hover:bg-surface-container-highest hover:text-on-surface"
                             )}
                           >
                             {s === "match" ? "Match %" : "Interview Ready"}

@@ -72,9 +72,28 @@ export function MockAuthProvider({ children }: { children: React.ReactNode }) {
 }
 
 // Unified Provider
+import { dark } from "@clerk/themes";
+
 export function SharedAuthProvider({ children }: { children: React.ReactNode }) {
   if (isClerkActive) {
-    return <Clerk.ClerkProvider>{children}</Clerk.ClerkProvider>;
+    return (
+      <Clerk.ClerkProvider 
+        appearance={{ 
+          baseTheme: dark,
+          variables: {
+            colorPrimary: "#10b981",
+          },
+          elements: {
+            card: "shadow-[8px_8px_0px_0px_#10b981] border-2 border-outline-variant rounded-none",
+            socialButtonsBlockButton: "rounded-none border-2 border-outline-variant hover:bg-surface-container",
+            formFieldInput: "rounded-none border-2 border-outline-variant",
+            formButtonPrimary: "rounded-none font-bold uppercase tracking-widest",
+          }
+        }}
+      >
+        {children}
+      </Clerk.ClerkProvider>
+    );
   }
   return <MockAuthProvider>{children}</MockAuthProvider>;
 }

@@ -259,13 +259,7 @@
   }
   
   body::before {
-    content: "";
-    position: fixed;
-    inset: 0;
-    z-index: 9999;
-    pointer-events: none;
-    opacity: 0.03;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    /* Removed noise filter for cleaner executive aesthetic */
   }
   
   ::selection {
@@ -667,5 +661,137 @@
   }
   .scrollbar-thin::-webkit-scrollbar-thumb:hover {
     background: rgba(148, 163, 184, 0.25);
+  }
+
+  /* ===== EXECUTIVE TERMINAL STYLES FROM HTML ===== */
+  .grid-bg {
+    background-size: 24px 24px;
+    background-image: linear-gradient(to right, #e2e8f0 1px, transparent 1px),
+                      linear-gradient(to bottom, #e2e8f0 1px, transparent 1px);
+    animation: grid-pulse 8s ease-in-out infinite;
+  }
+
+  @keyframes grid-pulse {
+    0%, 100% { opacity: 0.2; }
+    50% { opacity: 0.4; }
+  }
+
+  @keyframes fade-up {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .reveal { opacity: 0; }
+  .reveal.active { animation: fade-up 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+
+  .stagger-1 { animation-delay: 0.1s; }
+  .stagger-2 { animation-delay: 0.2s; }
+  .stagger-3 { animation-delay: 0.3s; }
+  .stagger-4 { animation-delay: 0.4s; }
+
+  .shimmer-btn { position: relative; overflow: hidden; }
+  .shimmer-btn::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transform: translateX(-100%);
+  }
+  .shimmer-btn:hover::after { animation: shimmer 0.8s forwards; }
+
+  @keyframes data-pulse {
+    0%, 100% { opacity: 1; filter: brightness(1); }
+    50% { opacity: 0.85; filter: brightness(1.1); }
+  }
+  .telemetry-pulse { animation: data-pulse 3s ease-in-out infinite; }
+
+  @keyframes grow-bar {
+    from { transform: scaleY(0); }
+    to { transform: scaleY(1); }
+  }
+  .animate-bar { transform-origin: bottom; animation: grow-bar 1s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; }
+  .animate-bar.active { opacity: 1; }
+
+  @keyframes grow-horizontal {
+    from { transform: scaleX(0); }
+    to { transform: scaleX(1); }
+  }
+  .animate-bar-h { transform-origin: left; animation: grow-horizontal 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+
+  .radar-grid {
+    background-image: radial-gradient(circle, #c6c6cd 1px, transparent 1px);
+    background-size: 20px 20px;
+  }
+
+  .loader-grid {
+    background-image: linear-gradient(#cbd5e1 1px, transparent 1px), linear-gradient(90deg, #cbd5e1 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+
+  @keyframes flicker {
+    0%, 100% { opacity: 0.8; }
+    50% { opacity: 0.2; }
+  }
+  .telemetry-flicker { animation: flicker 0.1s infinite; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .reveal, .animate-bar, .animate-bar-h, .telemetry-pulse, .shimmer-btn::after, .grid-bg {
+        animation: none !important;
+        opacity: 1 !important;
+        transform: none !important;
+    }
+  }
+
+  /* ===== CLERK BRUTALIST OVERRIDES ===== */
+  .cl-socialButtonsBlockButton {
+    border: 2px solid var(--outline-variant) !important;
+    background-color: var(--surface-container-lowest) !important;
+    border-radius: 0 !important;
+    color: var(--on-surface) !important;
+    transition: all 0.2s ease !important;
+  }
+  .cl-socialButtonsBlockButton:hover {
+    background-color: var(--surface-container) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 4px 4px 0px 0px var(--primary) !important;
+  }
+  .cl-formFieldInput {
+    border: 2px solid var(--outline-variant) !important;
+    border-radius: 0 !important;
+    background-color: var(--surface-container-lowest) !important;
+    color: var(--on-surface) !important;
+    box-shadow: none !important;
+  }
+  .cl-formFieldInput:focus {
+    border-color: var(--primary) !important;
+  }
+  .cl-card {
+    border: 2px solid var(--outline-variant) !important;
+    border-radius: 0 !important;
+    box-shadow: 8px 8px 0px 0px var(--primary) !important;
+    background-color: transparent !important;
+  }
+  .cl-formButtonPrimary {
+    border-radius: 0 !important;
+    text-transform: uppercase !important;
+    font-weight: 800 !important;
+    letter-spacing: 0.1em !important;
+    transition: all 0.2s ease !important;
+  }
+  .cl-formButtonPrimary:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 4px 4px 0px 0px rgba(16, 185, 129, 0.4) !important;
+  }
+  
+  /* Fix Clerk Dark Blocks & Typography */
+  .cl-footer, .cl-header, .cl-dividerRow, .cl-internal-wrapper, .cl-main {
+    background-color: transparent !important;
+    background: transparent !important;
+  }
+  .cl-footerActionText, .cl-dividerText, .cl-headerSubtitle, .cl-formFieldLabel {
+    color: var(--on-surface-variant) !important;
+  }
+  .cl-headerTitle, .cl-identityPreviewText, .cl-footerActionLink {
+    color: var(--primary) !important;
   }
 }

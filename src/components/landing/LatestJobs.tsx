@@ -45,9 +45,9 @@ export default function LatestJobs() {
   ).slice(0, 4); // Take top 4 for landing page
 
   return (
-    <section id="latest-jobs" className="relative py-24 sm:py-32 overflow-hidden">
+    <section id="latest-jobs" className="relative py-24 sm:py-32 overflow-hidden bg-background">
       {/* Background gradients */}
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-blue-500/5 to-transparent" />
+      <div className="absolute inset-0 bg-primary/5 pointer-events-none" />
       
       <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-3xl mx-auto mb-12">
@@ -55,7 +55,7 @@ export default function LatestJobs() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="inline-flex items-center gap-2 rounded-full border border-blue-500/20 bg-blue-500/10 px-4 py-1.5 text-sm font-medium text-blue-400 mb-6"
+            className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-4 py-1.5 text-sm font-medium text-primary mb-6"
           >
             <Cpu className="h-4 w-4" />
             Live from Remotive API
@@ -65,16 +65,16 @@ export default function LatestJobs() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
-            className="text-3xl font-bold tracking-tight font-[family-name:var(--font-space-grotesk)] sm:text-4xl md:text-5xl"
+            className="text-3xl font-bold tracking-tight font-[family-name:var(--font-space-grotesk)] sm:text-4xl md:text-5xl text-on-surface"
           >
-            Real Opportunities, <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500">Auto-Curated</span>
+            Real Opportunities, <span className="text-primary font-black">Auto-Curated</span>
           </motion.h2>
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.2 }}
-            className="mt-4 text-lg text-slate-400"
+            className="mt-4 text-lg text-on-surface-variant"
           >
             Browse the latest remote tech jobs below and apply directly. Search by role, company, or skill.
           </motion.p>
@@ -86,8 +86,8 @@ export default function LatestJobs() {
             transition={{ delay: 0.3 }}
             className="mt-8 relative max-w-xl mx-auto"
           >
-            <div className="relative flex items-center w-full h-12 rounded-2xl focus-within:shadow-lg bg-surface-container border border-outline-variant overflow-hidden">
-              <div className="grid place-items-center h-full w-12 text-slate-400">
+            <div className="relative flex items-center w-full h-12 rounded-2xl focus-within:shadow-lg bg-surface-container-high border border-outline-variant overflow-hidden">
+              <div className="grid place-items-center h-full w-12 text-on-surface-variant">
                 <Search className="h-5 w-5" />
               </div>
               <input
@@ -115,18 +115,18 @@ export default function LatestJobs() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.1 }}
-                className="group relative rounded-2xl border border-white/10 bg-white/5 p-6 hover:bg-white/10 transition-colors backdrop-blur-sm flex flex-col h-full"
+                className="group relative rounded-2xl border border-outline-variant bg-surface p-6 hover:shadow-md transition-shadow flex flex-col h-full"
               >
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex items-center gap-4">
-                    <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 text-white shadow-lg">
+                    <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-primary-container text-primary">
                       <Briefcase className="h-6 w-6" />
                     </div>
                     <div>
-                      <h3 className="text-xl font-bold text-white group-hover:text-blue-400 transition-colors">
+                      <h3 className="text-xl font-bold text-on-surface group-hover:text-primary transition-colors">
                         {job.role}
                       </h3>
-                      <div className="mt-1 flex items-center gap-3 text-sm text-slate-400">
+                      <div className="mt-1 flex items-center gap-3 text-sm text-on-surface-variant font-medium">
                         <span>{job.company}</span>
                         <span className="flex items-center gap-1">
                           <MapPin className="h-3.5 w-3.5" />
@@ -145,14 +145,14 @@ export default function LatestJobs() {
                       Apply <ExternalLink className="h-3.5 w-3.5" />
                     </a>
                   ) : (
-                    <div className="shrink-0 flex items-center gap-2 text-xs font-semibold text-emerald-400 bg-emerald-400/10 px-3 py-1.5 rounded-full border border-emerald-400/20">
+                    <div className="shrink-0 flex items-center gap-2 text-xs font-semibold text-green-600 bg-green-500/10 px-3 py-1.5 rounded-full border border-green-500/20">
                       <CheckCircle className="h-3.5 w-3.5" />
                       AI Match
                     </div>
                   )}
                 </div>
 
-                <p className="mt-4 text-sm text-slate-400 line-clamp-3">
+                <p className="mt-4 text-sm text-on-surface-variant line-clamp-3 leading-relaxed">
                   {job.description}
                 </p>
 
@@ -160,22 +160,22 @@ export default function LatestJobs() {
                   {job.required_skills.slice(0, 4).map((skill, i) => (
                     <span
                       key={i}
-                      className="inline-flex items-center rounded-md bg-white/5 px-2.5 py-1 text-xs font-medium text-slate-300 border border-white/10"
+                      className="inline-flex items-center rounded-md bg-surface-variant px-2.5 py-1 text-xs font-medium text-on-surface-variant border border-outline-variant"
                     >
                       {skill}
                     </span>
                   ))}
                 </div>
 
-                <div className="mt-6 flex items-center justify-between border-t border-white/10 pt-6">
+                <div className="mt-6 flex items-center justify-between border-t border-outline-variant pt-6">
                   <div className="flex items-center gap-6">
-                    <div className="flex items-center gap-2 text-sm">
-                      <DollarSign className="h-4 w-4 text-emerald-400" />
-                      <span className="font-medium text-white">{job.salary_range}</span>
+                    <div className="flex items-center gap-2 text-sm font-semibold">
+                      <DollarSign className="h-4 w-4 text-green-600" />
+                      <span className="text-on-surface">{job.salary_range}</span>
                     </div>
-                    <div className="flex items-center gap-2 text-sm">
-                      <TrendingUp className="h-4 w-4 text-blue-400" />
-                      <span className="font-medium text-white">{job.work_mode}</span>
+                    <div className="flex items-center gap-2 text-sm font-semibold">
+                      <TrendingUp className="h-4 w-4 text-primary" />
+                      <span className="text-on-surface">{job.work_mode}</span>
                     </div>
                   </div>
                 </div>
