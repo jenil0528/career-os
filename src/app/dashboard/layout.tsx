@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useUserCompat as useUser, UserButtonCompat as UserButton } from "@/lib/auth-shim";
-import ThemeToggle from "@/components/shared/ThemeToggle";
 
 const NAV_ITEMS = [
   { name: "Dashboard", href: "/dashboard", icon: "dashboard" },
@@ -130,7 +129,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                  }}
                />
             </div>
-            <ThemeToggle />
           </div>
         </header>
 

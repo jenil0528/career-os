@@ -13,7 +13,7 @@ interface ThemeContextType {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setThemeState] = useState<Theme>("cyber");
+  const [theme, setThemeState] = useState<Theme>("executive");
 
   useEffect(() => {
     // Load theme from localStorage
@@ -23,8 +23,8 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
         setThemeState(stored);
         applyThemeClass(stored);
       } else {
-        // Default to cyber
-        applyThemeClass("cyber");
+        // Default to executive
+        applyThemeClass("executive");
       }
     }
   }, []);

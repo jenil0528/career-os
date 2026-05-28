@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useUserCompat } from "@/lib/auth-shim";
 import { useRouter } from "next/navigation";
-import ThemeToggle from "@/components/shared/ThemeToggle";
 import { motion, AnimatePresence } from "motion/react";
 import {
   ArrowRight,
@@ -87,7 +86,6 @@ function FloatingNav() {
 
           {/* CTA + Mobile Toggle */}
           <div className="flex items-center gap-3">
-            <ThemeToggle />
             <Link
               href="/sign-in"
               className="hidden sm:block text-sm font-medium text-slate-400 hover:text-white transition-colors"
