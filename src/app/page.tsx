@@ -99,9 +99,9 @@ export default function Home() {
                   Initialize Profile
                   <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
                 </Link>
-                <button className="flex items-center gap-2 px-6 py-3 bg-transparent border border-outline-variant text-primary font-label-md text-label-md hover:bg-surface-container-low transition-colors">
+                <a href="#modules" className="flex items-center gap-2 px-6 py-3 bg-transparent border border-outline-variant text-primary font-label-md text-label-md hover:bg-surface-container-low transition-colors">
                   View System Specs
-                </button>
+                </a>
               </motion.div>
             </motion.div>
 
@@ -149,7 +149,7 @@ export default function Home() {
           </section>
 
           {/* Core Modules */}
-          <section className="py-24 px-container-margin md:px-32 border-b border-outline-variant bg-surface-container-lowest">
+          <section id="modules" className="py-24 px-container-margin md:px-32 border-b border-outline-variant bg-surface-container-lowest">
             <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-100px" }} variants={fadeUp} className="mb-16">
               <h2 className="font-headline-md text-headline-md text-primary mb-2">Core Modules</h2>
               <p className="font-body-md text-body-md text-on-surface-variant max-w-xl">Architectural components designed for deterministic career outcomes.</p>
@@ -169,7 +169,7 @@ export default function Home() {
                 </div>
                 <h3 className="font-headline-sm text-headline-sm text-primary mb-2">Deep ATS Analysis</h3>
                 <p className="font-body-sm text-body-sm text-on-surface-variant mb-density-spacious">Cryptographic extraction of keyword topologies from target job descriptions, ensuring baseline compliance with enterprise filtering systems.</p>
-                <Link href="#" className="font-label-md text-label-md text-primary flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-[-10px] group-hover:translate-x-0">
+                <Link href="/dashboard/resume" className="font-label-md text-label-md text-primary flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-[-10px] group-hover:translate-x-0">
                   Analyze Now <span className="material-symbols-outlined text-[14px]">arrow_forward</span>
                 </Link>
               </motion.div>
@@ -180,7 +180,7 @@ export default function Home() {
                 </div>
                 <h3 className="font-headline-sm text-headline-sm text-primary mb-2">High-Stakes Mocks</h3>
                 <p className="font-body-sm text-body-sm text-on-surface-variant mb-density-spacious">Simulated interrogation environments utilizing specialized LLMs trained on actual technical and behavioral executive interview transcripts.</p>
-                <Link href="#" className="font-label-md text-label-md text-primary flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-[-10px] group-hover:translate-x-0">
+                <Link href="/dashboard/interview" className="font-label-md text-label-md text-primary flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-[-10px] group-hover:translate-x-0">
                   Deploy Simulation <span className="material-symbols-outlined text-[14px]">arrow_forward</span>
                 </Link>
               </motion.div>
@@ -191,7 +191,7 @@ export default function Home() {
                 </div>
                 <h3 className="font-headline-sm text-headline-sm text-primary mb-2">Dynamic Roadmaps</h3>
                 <p className="font-body-sm text-body-sm text-on-surface-variant mb-density-spacious">Algorithmic mapping of skill adjacencies required for vertical transition, prioritizing immediate actionable capability acquisition.</p>
-                <Link href="#" className="font-label-md text-label-md text-primary flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-[-10px] group-hover:translate-x-0">
+                <Link href="/dashboard/roadmap" className="font-label-md text-label-md text-primary flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-[-10px] group-hover:translate-x-0">
                   View Topology <span className="material-symbols-outlined text-[14px]">arrow_forward</span>
                 </Link>
               </motion.div>
