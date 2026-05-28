@@ -113,25 +113,26 @@ export default function InterviewSession({
     };
   }, []);
 
+  // Ensure stream is attached to video element when it mounts
+  useEffect(() => {
+    if (videoRef.current && cameraStream) {
+      videoRef.current.srcObject = cameraStream;
+    }
+  }, [cameraStream]);
+
   // Simulate real-time diagnostic shifts to make the AI feel extremely "active" and "aware"
   useEffect(() => {
     const interval = setInterval(() => {
       setDiagnostics((prev) => ({
-        cadence: aiStatus === "listening" 
-          ? Math.round(128 + Math.random() * 15) 
-          : prev.cadence,
-        eyeContact: Math.round(95 + Math.random() * 4),
-        confidence: aiStatus === "listening" 
-          ? Math.round(87 + Math.random() * 9) 
-          : prev.confidence,
-        emotion: aiStatus === "listening" 
-          ? (Math.random() > 0.5 ? "Engaged" : "Composed") 
-          : "Professional",
+        cadence: Math.round(128 + Math.random() * 15),
+        eyeContact: Math.round(92 + Math.random() * 7),
+        confidence: Math.round(85 + Math.random() * 12),
+        emotion: Math.random() > 0.6 ? "Engaged" : Math.random() > 0.3 ? "Analyzing" : "Composed",
       }));
-    }, 2500);
+    }, 1500); // Update faster to look like real data
 
     return () => clearInterval(interval);
-  }, [aiStatus]);
+  }, []);
 
   // Cleanup on unmount
   useEffect(() => {
