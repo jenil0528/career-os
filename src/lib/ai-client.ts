@@ -15,13 +15,17 @@ export async function getAIClient(request: NextRequest) {
   let model = "gemini-2.5-flash"; // Default
 
   // 2. Smart Model Routing
-  if (apiKey.startsWith("AIza")) {
+  if (apiKey.startsWith("AIza") || apiKey.startsWith("AQ.")) {
     // It's a Google Gemini Key
     openaiConfig.baseURL = "https://generativelanguage.googleapis.com/v1beta/openai/";
     model = "gemini-2.5-flash";
   } else if (apiKey.startsWith("sk-") || apiKey.startsWith("proj-")) {
     // It's an OpenAI Key
     model = "gpt-4o-mini";
+  } else if (apiKey.startsWith("nvapi-")) {
+    // It's an NVIDIA NIM Key
+    openaiConfig.baseURL = "https://integrate.api.nvidia.com/v1";
+    model = "meta/llama-3.1-70b-instruct"; // or another free model available on NVIDIA NIM
   } else {
     // Fallback: Assume the system environment variable is configured for Gemini via OpenAI proxy
     openaiConfig.baseURL = "https://generativelanguage.googleapis.com/v1beta/openai/";
