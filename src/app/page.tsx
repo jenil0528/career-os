@@ -163,36 +163,42 @@ export default function Home() {
               className="grid grid-cols-1 md:grid-cols-3 gap-0 border border-outline-variant"
             >
               {/* Module 1 */}
-              <motion.div variants={fadeUp} className="p-density-spacious border-b md:border-b-0 md:border-r border-outline-variant hover:bg-surface-container-low transition-all duration-300 transform group">
-                <div className="w-10 h-10 bg-primary text-on-primary flex items-center justify-center mb-density-spacious transition-transform group-hover:scale-110">
-                  <span className="material-symbols-outlined">document_scanner</span>
-                </div>
-                <h3 className="font-headline-sm text-headline-sm text-primary mb-2">Deep ATS Analysis</h3>
-                <p className="font-body-sm text-body-sm text-on-surface-variant mb-density-spacious">Cryptographic extraction of keyword topologies from target job descriptions, ensuring baseline compliance with enterprise filtering systems.</p>
-                <Link href="/dashboard/resume" className="font-label-md text-label-md text-primary flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-[-10px] group-hover:translate-x-0">
-                  Analyze Now <span className="material-symbols-outlined text-[14px]">arrow_forward</span>
+              <motion.div variants={fadeUp}>
+                <Link href="/dashboard/resume" className="block h-full p-density-spacious border-b md:border-b-0 md:border-r border-outline-variant hover:bg-surface-container-low transition-all duration-300 transform group">
+                  <div className="w-10 h-10 bg-primary text-on-primary flex items-center justify-center mb-density-spacious transition-transform group-hover:scale-110">
+                    <span className="material-symbols-outlined">document_scanner</span>
+                  </div>
+                  <h3 className="font-headline-sm text-headline-sm text-primary mb-2">Deep ATS Analysis</h3>
+                  <p className="font-body-sm text-body-sm text-on-surface-variant mb-density-spacious">Cryptographic extraction of keyword topologies from target job descriptions, ensuring baseline compliance with enterprise filtering systems.</p>
+                  <div className="font-label-md text-label-md text-primary flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-[-10px] group-hover:translate-x-0">
+                    Analyze Now <span className="material-symbols-outlined text-[14px]">arrow_forward</span>
+                  </div>
                 </Link>
               </motion.div>
               {/* Module 2 */}
-              <motion.div variants={fadeUp} className="p-density-spacious border-b md:border-b-0 md:border-r border-outline-variant hover:bg-surface-container-low transition-all duration-300 transform group">
-                <div className="w-10 h-10 bg-surface-container-highest text-primary flex items-center justify-center mb-density-spacious transition-transform group-hover:scale-110">
-                  <span className="material-symbols-outlined">model_training</span>
-                </div>
-                <h3 className="font-headline-sm text-headline-sm text-primary mb-2">High-Stakes Mocks</h3>
-                <p className="font-body-sm text-body-sm text-on-surface-variant mb-density-spacious">Simulated interrogation environments utilizing specialized LLMs trained on actual technical and behavioral executive interview transcripts.</p>
-                <Link href="/dashboard/interview" className="font-label-md text-label-md text-primary flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-[-10px] group-hover:translate-x-0">
-                  Deploy Simulation <span className="material-symbols-outlined text-[14px]">arrow_forward</span>
+              <motion.div variants={fadeUp}>
+                <Link href="/dashboard/interview" className="block h-full p-density-spacious border-b md:border-b-0 md:border-r border-outline-variant hover:bg-surface-container-low transition-all duration-300 transform group">
+                  <div className="w-10 h-10 bg-surface-container-highest text-primary flex items-center justify-center mb-density-spacious transition-transform group-hover:scale-110">
+                    <span className="material-symbols-outlined">model_training</span>
+                  </div>
+                  <h3 className="font-headline-sm text-headline-sm text-primary mb-2">High-Stakes Mocks</h3>
+                  <p className="font-body-sm text-body-sm text-on-surface-variant mb-density-spacious">Simulated interrogation environments utilizing specialized LLMs trained on actual technical and behavioral executive interview transcripts.</p>
+                  <div className="font-label-md text-label-md text-primary flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-[-10px] group-hover:translate-x-0">
+                    Deploy Simulation <span className="material-symbols-outlined text-[14px]">arrow_forward</span>
+                  </div>
                 </Link>
               </motion.div>
               {/* Module 3 */}
-              <motion.div variants={fadeUp} className="p-density-spacious hover:bg-surface-container-low transition-all duration-300 transform group">
-                <div className="w-10 h-10 bg-surface-container-highest text-primary flex items-center justify-center mb-density-spacious transition-transform group-hover:scale-110">
-                  <span className="material-symbols-outlined">account_tree</span>
-                </div>
-                <h3 className="font-headline-sm text-headline-sm text-primary mb-2">Dynamic Roadmaps</h3>
-                <p className="font-body-sm text-body-sm text-on-surface-variant mb-density-spacious">Algorithmic mapping of skill adjacencies required for vertical transition, prioritizing immediate actionable capability acquisition.</p>
-                <Link href="/dashboard/roadmap" className="font-label-md text-label-md text-primary flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-[-10px] group-hover:translate-x-0">
-                  View Topology <span className="material-symbols-outlined text-[14px]">arrow_forward</span>
+              <motion.div variants={fadeUp}>
+                <Link href="/dashboard/roadmap" className="block h-full p-density-spacious hover:bg-surface-container-low transition-all duration-300 transform group">
+                  <div className="w-10 h-10 bg-surface-container-highest text-primary flex items-center justify-center mb-density-spacious transition-transform group-hover:scale-110">
+                    <span className="material-symbols-outlined">account_tree</span>
+                  </div>
+                  <h3 className="font-headline-sm text-headline-sm text-primary mb-2">Dynamic Roadmaps</h3>
+                  <p className="font-body-sm text-body-sm text-on-surface-variant mb-density-spacious">Algorithmic mapping of skill adjacencies required for vertical transition, prioritizing immediate actionable capability acquisition.</p>
+                  <div className="font-label-md text-label-md text-primary flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-[-10px] group-hover:translate-x-0">
+                    View Topology <span className="material-symbols-outlined text-[14px]">arrow_forward</span>
+                  </div>
                 </Link>
               </motion.div>
             </motion.div>

@@ -57,7 +57,7 @@ export async function POST(request: NextRequest) {
         },
       ],
       temperature: 0.7,
-      max_tokens: 4000,
+      max_tokens: 8192,
       response_format: { type: "json_object" },
     });
 
@@ -69,7 +69,19 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const roadmap = JSON.parse(responseText);
+    // Clean the response text to remove any markdown formatting (e.g. ```json ... ```)
+    let cleanText = responseText;
+    if (cleanText.startsWith("```json")) {
+      cleanText = cleanText.substring(7);
+    } else if (cleanText.startsWith("```")) {
+      cleanText = cleanText.substring(3);
+    }
+    if (cleanText.endsWith("```")) {
+      cleanText = cleanText.substring(0, cleanText.length - 3);
+    }
+    cleanText = cleanText.trim();
+
+    const roadmap = JSON.parse(cleanText);
     return NextResponse.json(roadmap);
   } catch (error) {
     console.error("Roadmap generation error:", error);

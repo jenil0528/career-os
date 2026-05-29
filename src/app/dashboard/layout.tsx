@@ -22,6 +22,12 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const { user, isLoaded } = useUser();
   const pathname = usePathname();
 
+  useEffect(() => {
+    if (isLoaded && !user) {
+      window.location.href = "/sign-in";
+    }
+  }, [isLoaded, user]);
+
   if (!isLoaded) {
     return (
       <div className="flex h-screen items-center justify-center bg-background">
@@ -37,7 +43,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   return (
     <div className="bg-background text-on-background font-body-md text-body-md flex h-screen overflow-hidden">
       {/* SideNavBar Component */}
-      <aside className="hidden md:flex flex-col h-screen w-64 border-r border-outline-variant bg-surface-container-low py-unit shrink-0">
+      <aside className="hidden md:flex flex-col h-screen w-64 border-r border-outline-variant bg-surface-container-low py-unit shrink-0 print:hidden">
         <div className="px-container-margin py-gutter flex items-center gap-density-regular border-b border-outline-variant mb-unit pb-gutter">
           <img 
             alt="Executive User Profile" 
@@ -95,9 +101,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         </div>
       </aside>
 
-      <main className="flex-1 flex flex-col min-w-0 overflow-y-auto bg-surface">
+      <main className="flex-1 flex flex-col min-w-0 overflow-y-auto bg-surface print:overflow-visible print:bg-white">
         {/* TopNavBar Component */}
-        <header className="flex justify-between items-center h-12 px-container-margin w-full border-b border-outline-variant bg-surface shrink-0">
+        <header className="flex justify-between items-center h-12 px-container-margin w-full border-b border-outline-variant bg-surface shrink-0 print:hidden">
           <div className="flex items-center gap-gutter">
             <span className="font-headline-sm text-headline-sm font-black text-tertiary">Executive Terminal</span>
           </div>
@@ -120,7 +126,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         </header>
 
         {/* Canvas */}
-        <div className="flex flex-col flex-1 w-full relative">
+        <div className="flex flex-col flex-1 w-full relative print:overflow-visible">
           {children}
         </div>
       </main>

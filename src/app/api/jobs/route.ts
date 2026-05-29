@@ -4,8 +4,8 @@ import { createClient } from "@supabase/supabase-js";
 export async function GET() {
   try {
     // 1. Fetch real jobs from Remotive API (Software Development category)
-    const remotiveRes = await fetch("https://remotive.com/api/remote-jobs?category=software-dev&limit=15", {
-      next: { revalidate: 3600 } // Cache for 1 hour
+    const remotiveRes = await fetch("https://remotive.com/api/remote-jobs?category=software-dev&limit=50", {
+      cache: "no-store" // Always fetch the freshest, newly arrived jobs
     });
     
     let realJobs: any[] = [];

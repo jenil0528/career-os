@@ -425,43 +425,86 @@ export default function JobMatchPage() {
         <AnimatePresence mode="wait">
           {!result && !isLoading && (
             <motion.div key="upload" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="w-full">
-              <div className="max-w-2xl mx-auto mb-16">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-16">
+                
+                {/* Left: AI Upload Option */}
                 <div
                   onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
                   onDragLeave={() => setIsDragging(false)}
-                onDrop={handleDrop}
-                className={cn(
-                  "bg-surface-container border border-outline-variant rounded-2xl p-12 text-center transition-all duration-300 cursor-pointer group",
-                  isDragging ? "border-primary bg-primary/5 scale-[1.02]" : "hover:border-primary/50"
-                )}
-                onClick={() => document.getElementById("job-resume-input")?.click()}
-              >
-                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500/20 to-purple-500/10 mx-auto mb-6 flex items-center justify-center border border-blue-500/20 group-hover:scale-110 transition-transform">
-                  <Upload className="w-8 h-8 text-blue-400" />
+                  onDrop={handleDrop}
+                  className={cn(
+                    "bg-surface-container border border-outline-variant rounded-2xl p-10 text-center transition-all duration-300 cursor-pointer group flex flex-col h-full",
+                    isDragging ? "border-primary bg-primary/5 scale-[1.02]" : "hover:border-primary/50"
+                  )}
+                  onClick={() => document.getElementById("job-resume-input")?.click()}
+                >
+                  <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500/20 to-purple-500/10 mx-auto mb-6 flex items-center justify-center border border-blue-500/20 group-hover:scale-110 transition-transform">
+                    <Upload className="w-8 h-8 text-blue-400" />
+                  </div>
+                  <h3 className="text-xl font-bold text-on-surface mb-2 font-[family-name:var(--font-space-grotesk)]">
+                    Upload Your Resume
+                  </h3>
+                  <p className="text-on-surface-variant text-sm mb-6 flex-1">
+                    Let our AI analyze your skills and match you with the best career opportunities automatically.
+                  </p>
+                  <div>
+                    <div className="inline-flex items-center gap-2 btn-primary rounded-xl px-6 py-3 text-sm font-semibold">
+                      <FileText className="h-4 w-4" />
+                      Choose PDF File
+                    </div>
+                  </div>
+                  <input
+                    id="job-resume-input"
+                    type="file"
+                    accept=".pdf"
+                    className="hidden"
+                    onChange={handleFileInput}
+                  />
+                  {error && (
+                    <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-red-400 text-sm text-center mt-4">
+                      {error}
+                    </motion.p>
+                  )}
                 </div>
-                <h3 className="text-xl font-bold text-on-surface mb-2 font-[family-name:var(--font-space-grotesk)]">
-                  Upload Your Resume
-                </h3>
-                <p className="text-on-surface-variant text-sm mb-6 max-w-md mx-auto">
-                  Drag and drop your PDF resume, or click to browse. Our AI will analyze your skills and match you with the best career opportunities.
-                </p>
-                <div className="inline-flex items-center gap-2 btn-primary rounded-xl px-6 py-3 text-sm font-semibold">
-                  <FileText className="h-4 w-4" />
-                  Choose PDF File
+
+                {/* Right: Simple Search Option */}
+                <div className="bg-surface-container border border-outline-variant rounded-2xl p-10 text-center transition-all duration-300 flex flex-col h-full">
+                  <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-green-500/20 to-emerald-500/10 mx-auto mb-6 flex items-center justify-center border border-green-500/20">
+                    <Search className="w-8 h-8 text-green-400" />
+                  </div>
+                  <h3 className="text-xl font-bold text-on-surface mb-2 font-[family-name:var(--font-space-grotesk)]">
+                    Or Simply Search
+                  </h3>
+                  <p className="text-on-surface-variant text-sm mb-6 flex-1">
+                    Don't want to use AI matching? Browse open roles directly by title, company, or required skills.
+                  </p>
+                  
+                  <div className="relative flex items-center w-full h-12 rounded-xl focus-within:shadow-md bg-surface border border-outline-variant overflow-hidden transition-shadow mb-4">
+                    <div className="grid place-items-center h-full w-12 text-on-surface-variant">
+                      <Search className="h-5 w-5" />
+                    </div>
+                    <input
+                      className="peer h-full w-full outline-none text-sm text-on-surface bg-transparent pr-4"
+                      type="text"
+                      placeholder="Try 'Frontend', 'React', or 'Remote'..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                    />
+                  </div>
+                  
+                  <div className="flex flex-wrap justify-center gap-2">
+                    {["Frontend", "Backend", "AI", "Remote"].map(tag => (
+                      <button
+                        key={tag}
+                        onClick={() => setSearchQuery(tag)}
+                        className="px-3 py-1.5 text-xs font-semibold rounded-lg bg-surface-variant text-on-surface-variant hover:bg-surface-container-highest transition-colors"
+                      >
+                        {tag}
+                      </button>
+                    ))}
+                  </div>
                 </div>
-                <input
-                  id="job-resume-input"
-                  type="file"
-                  accept=".pdf"
-                  className="hidden"
-                  onChange={handleFileInput}
-                />
-              </div>
-              {error && (
-                <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-red-400 text-sm text-center mt-4">
-                  {error}
-                </motion.p>
-              )}
+
               </div>
 
               {/* Job Board section */}

@@ -28,34 +28,38 @@ export const INTERVIEW_SYSTEM_PROMPT = {
   hr: `You are an experienced HR interviewer conducting a behavioral interview. 
 Ask thoughtful questions about the candidate's experience, teamwork, leadership, conflict resolution, and career goals.
 Be professional but friendly. Ask one question at a time.
-After the candidate answers, briefly acknowledge their response and ask the next question.
+CRITICAL INSTRUCTION: After the candidate answers, act like a real interviewer. First, analyze their answer and provide immediate, constructive feedback (you can roleplay reacting to their body language, confidence, or tone). Give a quick suggestion for improvement, and THEN ask your next question.
 Start with an introduction and your first question.`,
 
   technical: `You are a senior software engineer conducting a technical interview.
 Ask questions about data structures, algorithms, system design, and problem-solving.
 Start with easier questions and gradually increase difficulty.
-Ask one question at a time. After the candidate answers, provide brief feedback and ask the next question.
+CRITICAL INSTRUCTION: After the candidate answers, act like a real interviewer. First, analyze their answer and provide immediate, constructive feedback (you can roleplay reacting to their body language, confidence, or tone). Give a quick suggestion for improvement, and THEN ask your next question.
 Start with an introduction and your first question.`,
 
   startup: `You are a startup founder interviewing a potential co-founder/early employee.
 Ask questions about their vision, risk tolerance, problem-solving ability, and passion.
 Be energetic and direct. Focus on culture fit, resourcefulness, and ambition.
-Ask one question at a time. Start with an introduction and your first question.`,
+CRITICAL INSTRUCTION: After the candidate answers, act like a real interviewer. First, analyze their answer and provide immediate, constructive feedback (you can roleplay reacting to their body language, confidence, or tone). Give a quick suggestion for improvement, and THEN ask your next question.
+Start with an introduction and your first question.`,
 
   product: `You are a Director of Product interviewing a Product Manager candidate.
 Ask questions about product strategy, user empathy, roadmap prioritization, and data-driven decision making.
 Be analytical and strategic. Focus on how they handle trade-offs and cross-functional teams.
-Ask one question at a time. Start with an introduction and your first question.`,
+CRITICAL INSTRUCTION: After the candidate answers, act like a real interviewer. First, analyze their answer and provide immediate, constructive feedback (you can roleplay reacting to their body language, confidence, or tone). Give a quick suggestion for improvement, and THEN ask your next question.
+Start with an introduction and your first question.`,
 
   sales: `You are a VP of Sales interviewing a Sales Executive candidate.
 Ask questions about pipeline generation, objection handling, closing strategies, and quota attainment.
 Be assertive and practical. Focus on resilience, relationship building, and sales methodology.
-Ask one question at a time. Start with an introduction and your first question.`,
+CRITICAL INSTRUCTION: After the candidate answers, act like a real interviewer. First, analyze their answer and provide immediate, constructive feedback (you can roleplay reacting to their body language, confidence, or tone). Give a quick suggestion for improvement, and THEN ask your next question.
+Start with an introduction and your first question.`,
 
   marketing: `You are a Chief Marketing Officer interviewing a Marketing Director candidate.
 Ask questions about growth strategies, campaign ROI, brand positioning, and channel optimization.
 Be creative yet data-oriented. Focus on how they measure success and adapt to market changes.
-Ask one question at a time. Start with an introduction and your first question.`,
+CRITICAL INSTRUCTION: After the candidate answers, act like a real interviewer. First, analyze their answer and provide immediate, constructive feedback (you can roleplay reacting to their body language, confidence, or tone). Give a quick suggestion for improvement, and THEN ask your next question.
+Start with an introduction and your first question.`,
 };
 
 export const INTERVIEW_ANALYSIS_PROMPT = `Analyze the following interview answer and provide feedback as JSON:
@@ -97,7 +101,7 @@ Return your roadmap as a valid JSON object with this structure:
   ]
 }
 
-Include 4-6 phases covering fundamentals to advanced topics. Be specific with real courses, books, and certifications.`;
+Include exactly 4 phases covering fundamentals to advanced topics. Limit to max 3 skills, 1 project, and 2 resources per phase. Be concise and specific.`;
 
 export const JOB_MATCH_PROMPT = `You are an expert career advisor and technical recruiter AI. Analyze the following resume text and generate a comprehensive job match analysis.
 

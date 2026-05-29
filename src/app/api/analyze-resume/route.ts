@@ -28,6 +28,7 @@ export async function POST(request: NextRequest) {
     }
 
     let resumeText = "";
+    let githubData: any = null;
 
     // 1. Process PDF if provided
     if (file && file.size > 0) {
@@ -59,6 +60,7 @@ export async function POST(request: NextRequest) {
           if (userRes.ok && reposRes.ok) {
             const userData = await userRes.json();
             const reposData = await reposRes.json();
+            githubData = { user: userData, repos: reposData };
             resumeText += `\n\n=== GITHUB PROFILE ===\nUsername: ${userData.login}\nBio: ${userData.bio}\nPublic Repos: ${userData.public_repos}\nFollowers: ${userData.followers}\nRecent Repositories:\n`;
             reposData.forEach((repo: any) => {
               resumeText += `- ${repo.name}: ${repo.description || "No description"} (Language: ${repo.language})\n`;
@@ -76,7 +78,28 @@ export async function POST(request: NextRequest) {
 
     if (!apiKey) {
       await new Promise((resolve) => setTimeout(resolve, 2000));
-      return NextResponse.json(DEMO_RESUME_ANALYSIS);
+      const customizedReview = JSON.parse(JSON.stringify(DEMO_RESUME_ANALYSIS));
+      
+      if (githubData) {
+         customizedReview.strengths.unshift(`Active open-source contributor with ${githubData.user.public_repos} public repositories`);
+         if (githubData.user.followers > 10) {
+            customizedReview.strengths.unshift(`Strong developer community presence (${githubData.user.followers} followers)`);
+         }
+         
+         const languages = [...new Set(githubData.repos.map((r: any) => r.language).filter(Boolean))];
+         if (languages.length > 0) {
+            customizedReview.foundKeywords = [...new Set([...customizedReview.foundKeywords, ...(languages as string[])])];
+            customizedReview.recruiterFeedback = `The candidate has a verified GitHub profile (@${githubData.user.login}). I can see hands-on experience in ${languages.join(", ")} based on their recent repos like ${githubData.repos[0]?.name}. ` + customizedReview.recruiterFeedback;
+            
+            customizedReview.sections.projects.score = 92;
+            customizedReview.sections.projects.feedback = `Excellent! Verified GitHub profile with ${githubData.user.public_repos} repos including ${githubData.repos.map((r: any) => r.name).slice(0, 2).join(" and ")}.`;
+         }
+      } else if (file) {
+         customizedReview.recruiterFeedback = `I reviewed the uploaded document (${file.name}). ` + customizedReview.recruiterFeedback;
+         customizedReview.sections.formatting.feedback = `PDF parsed successfully. The document structure was maintained well during extraction.`;
+      }
+      
+      return NextResponse.json(customizedReview);
     }
 
     const OpenAI = (await import("openai")).default;

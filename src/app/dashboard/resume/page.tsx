@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import NextLink from "next/link";
 import { useUserCompat as useUser } from "@/lib/auth-shim";
 import { Loader2, Upload, Link, Play } from "lucide-react";
 import type { ResumeAnalysis } from "@/types";
@@ -10,6 +11,8 @@ export default function ResumePage() {
   const [file, setFile] = useState<File | null>(null);
   const [githubUrl, setGithubUrl] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isUploadingFile, setIsUploadingFile] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
   const [analysis, setAnalysis] = useState<ResumeAnalysis | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -37,6 +40,10 @@ export default function ResumePage() {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleDownload = () => {
+    window.print();
   };
 
   if (!isLoaded) {
@@ -73,17 +80,60 @@ export default function ResumePage() {
               <label className="font-label-md text-label-md text-on-surface uppercase tracking-wider">
                 Upload PDF Resume
               </label>
-              <div className="border border-dashed border-outline-variant p-8 flex flex-col items-center justify-center gap-3 bg-surface-container-lowest hover:bg-surface-container-low transition-colors cursor-pointer relative">
+              <div className={`border border-dashed p-8 flex flex-col items-center justify-center gap-3 transition-colors cursor-pointer relative ${file ? "border-primary bg-primary/5" : "border-outline-variant bg-surface-container-lowest hover:bg-surface-container-low"}`}>
                 <input 
                   type="file" 
                   accept=".pdf" 
                   className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                  onChange={(e) => setFile(e.target.files?.[0] || null)}
+                  onChange={(e) => {
+                    const selected = e.target.files?.[0];
+                    if (selected) {
+                      setFile(selected);
+                      setIsUploadingFile(true);
+                      setUploadProgress(0);
+                      let progress = 0;
+                      const interval = setInterval(() => {
+                        progress += Math.random() * 25 + 10;
+                        if (progress >= 100) {
+                          progress = 100;
+                          clearInterval(interval);
+                          setTimeout(() => {
+                            setIsUploadingFile(false);
+                          }, 500);
+                        }
+                        setUploadProgress(Math.min(progress, 100));
+                      }, 200);
+                    } else {
+                      setFile(null);
+                    }
+                  }}
                 />
-                <Upload className="w-8 h-8 text-primary" />
-                <span className="font-mono-label text-mono-label text-on-surface-variant">
-                  {file ? file.name : "DRAG & DROP OR CLICK TO UPLOAD (PDF MAX 10MB)"}
-                </span>
+                {file ? (
+                  isUploadingFile ? (
+                    <div className="w-full flex flex-col items-center gap-3">
+                      <div className="w-10 h-10 rounded-full border-4 border-outline-variant border-t-primary animate-spin mb-1"></div>
+                      <span className="font-label-lg text-primary tracking-wide">UPLOADING... {Math.round(uploadProgress)}%</span>
+                      <div className="w-2/3 bg-surface-container h-1.5 mt-1 overflow-hidden border border-outline-variant rounded-full">
+                        <div className="bg-primary h-full transition-all duration-200" style={{ width: `${uploadProgress}%` }}></div>
+                      </div>
+                    </div>
+                  ) : (
+                    <>
+                      <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center mb-2">
+                        <span className="material-symbols-outlined text-primary text-[24px]">check_circle</span>
+                      </div>
+                      <span className="font-label-lg text-primary tracking-wide">PDF SUCCESSFULLY UPLOADED</span>
+                      <span className="font-mono-label text-on-surface-variant">{file.name}</span>
+                    </>
+                  )
+                ) : (
+                  <>
+                    <Upload className="w-8 h-8 text-primary" />
+                    <span className="font-mono-label text-mono-label text-on-surface-variant">
+                      DRAG & DROP OR CLICK TO UPLOAD (PDF MAX 10MB)
+                    </span>
+                  </>
+                )}
               </div>
             </div>
 
@@ -134,16 +184,20 @@ export default function ResumePage() {
 
   // Analysis View
   return (
-    <div className="flex flex-1 overflow-hidden bg-surface-container w-full h-full relative">
+    <div className="flex flex-1 overflow-hidden bg-surface-container w-full h-full relative print:overflow-visible print:bg-white print:block">
       {/* Center Canvas: Document Viewer */}
-      <section className="flex-1 overflow-y-auto flex justify-center p-8 relative">
-        <div className="absolute top-8 right-8 flex gap-2 z-10 bg-surface border border-outline-variant p-1 shadow-sm">
-          <button onClick={() => setAnalysis(null)} className="px-3 py-1 flex items-center gap-2 text-label-md font-label-md text-primary hover:bg-surface-container-low">
+      <section className="flex-1 overflow-y-auto flex justify-center p-8 relative print:overflow-visible print:p-0 print:block">
+        <div className="absolute top-8 right-8 flex z-10 bg-surface border border-outline-variant p-1 shadow-sm print:hidden">
+          <button onClick={() => setAnalysis(null)} className="px-3 py-2 flex items-center gap-2 text-label-md font-label-md text-primary hover:bg-surface-container-low transition-colors">
             <span className="material-symbols-outlined text-[16px]">sync</span> Reprocess
+          </button>
+          <div className="w-[1px] bg-outline-variant my-1"></div>
+          <button onClick={handleDownload} className="px-3 py-2 flex items-center gap-2 text-label-md font-label-md text-primary hover:bg-surface-container-low transition-colors">
+            <span className="material-symbols-outlined text-[16px]">picture_as_pdf</span> Download PDF
           </button>
         </div>
 
-        <div className="bg-surface-container-lowest border border-outline-variant w-full max-w-4xl p-12 min-h-full flex flex-col gap-6 relative shadow-none rounded-none">
+        <div className="bg-surface-container-lowest border border-outline-variant w-full max-w-4xl p-12 min-h-full flex flex-col gap-6 relative shadow-none rounded-none print:border-none print:p-0 print:max-w-none print:block">
           {/* Document Header */}
           <div className="border-b-2 border-primary pb-6 mb-2">
             <h1 className="font-headline-lg text-headline-lg text-primary tracking-tight">AI Executive Brief</h1>
@@ -209,7 +263,7 @@ export default function ResumePage() {
       </section>
 
       {/* Right Sidebar: Analysis Panels */}
-      <aside className="w-80 bg-surface border-l border-outline-variant flex flex-col h-full shrink-0 overflow-y-auto">
+      <aside className="w-80 bg-surface border-l border-outline-variant flex flex-col h-full shrink-0 overflow-y-auto print:hidden">
         <div className="p-container-margin border-b border-outline-variant bg-surface-container-lowest sticky top-0 z-10">
           <h2 className="font-label-md text-label-md text-primary flex items-center gap-2">
             <span className="material-symbols-outlined text-[18px]">document_scanner</span>
@@ -271,6 +325,42 @@ export default function ResumePage() {
                 <p className="font-body-sm text-body-sm text-on-surface-variant leading-tight">{s}</p>
               </div>
             ))}
+          </div>
+        </div>
+
+        {/* Next Steps Action Plan */}
+        <div className="p-container-margin border-t border-outline-variant mt-auto bg-surface-container-lowest">
+          <div className="font-mono-label text-mono-label text-primary tracking-wider uppercase mb-4 flex items-center gap-2">
+            <span className="material-symbols-outlined text-[16px]">explore</span> Action Plan
+          </div>
+          <div className="flex flex-col gap-3">
+            <NextLink href="/dashboard/interview" className="border border-outline-variant p-3 bg-surface hover:bg-primary/5 hover:border-primary transition-all cursor-pointer flex items-center gap-3 group">
+              <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
+                <span className="material-symbols-outlined text-primary text-[20px]">mic</span>
+              </div>
+              <div className="flex flex-col">
+                <span className="font-label-md text-primary uppercase">Mock Interview</span>
+                <span className="font-body-sm text-on-surface-variant">Practice with AI</span>
+              </div>
+            </NextLink>
+            <NextLink href="/dashboard/jobs" className="border border-outline-variant p-3 bg-surface hover:bg-primary/5 hover:border-primary transition-all cursor-pointer flex items-center gap-3 group">
+              <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
+                <span className="material-symbols-outlined text-primary text-[20px]">work</span>
+              </div>
+              <div className="flex flex-col">
+                <span className="font-label-md text-primary uppercase">Job Match</span>
+                <span className="font-body-sm text-on-surface-variant">Find relevant roles</span>
+              </div>
+            </NextLink>
+            <NextLink href="/dashboard/roadmap" className="border border-outline-variant p-3 bg-surface hover:bg-primary/5 hover:border-primary transition-all cursor-pointer flex items-center gap-3 group">
+              <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
+                <span className="material-symbols-outlined text-primary text-[20px]">map</span>
+              </div>
+              <div className="flex flex-col">
+                <span className="font-label-md text-primary uppercase">Career Roadmap</span>
+                <span className="font-body-sm text-on-surface-variant">Plan your growth</span>
+              </div>
+            </NextLink>
           </div>
         </div>
       </aside>

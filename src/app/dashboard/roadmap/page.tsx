@@ -79,6 +79,24 @@ export default function RoadmapPage() {
                 className="w-full bg-surface-container-lowest border border-outline-variant py-4 pl-10 pr-4 font-mono-label text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20"
               />
             </div>
+            <div className="flex flex-wrap gap-2 mt-1">
+              {[
+                "Software Engineer",
+                "Product Manager",
+                "Data Scientist",
+                "UX Designer",
+                "Marketing Director",
+                "CTO"
+              ].map((preset) => (
+                <button
+                  key={preset}
+                  onClick={() => setRole(preset)}
+                  className="px-3 py-1 border border-outline-variant bg-surface-container hover:bg-surface-container-high hover:border-primary text-on-surface-variant hover:text-primary font-mono-label text-[10px] uppercase tracking-wider transition-all"
+                >
+                  {preset}
+                </button>
+              ))}
+            </div>
           </div>
 
           <button

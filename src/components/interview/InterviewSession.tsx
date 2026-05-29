@@ -120,11 +120,17 @@ export default function InterviewSession({
     }
   }, [cameraStream]);
 
+  // Keep a ref of isRecording for the interval
+  const isRecordingRef = useRef(isRecording);
+  useEffect(() => {
+    isRecordingRef.current = isRecording;
+  }, [isRecording]);
+
   // Simulate real-time diagnostic shifts to make the AI feel extremely "active" and "aware"
   useEffect(() => {
     const interval = setInterval(() => {
       setDiagnostics((prev) => ({
-        cadence: Math.round(128 + Math.random() * 15),
+        cadence: isRecordingRef.current ? Math.round(128 + Math.random() * 15) : 0,
         eyeContact: Math.round(92 + Math.random() * 7),
         confidence: Math.round(85 + Math.random() * 12),
         emotion: Math.random() > 0.6 ? "Engaged" : Math.random() > 0.3 ? "Analyzing" : "Composed",
@@ -148,6 +154,32 @@ export default function InterviewSession({
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
+
+  const speakText = useCallback((text: string) => {
+    if (typeof window !== "undefined" && 'speechSynthesis' in window) {
+      window.speechSynthesis.cancel(); // Cancel any ongoing speech
+      const utterance = new SpeechSynthesisUtterance(text);
+      
+      // Try to find a good English voice
+      const voices = window.speechSynthesis.getVoices();
+      const preferredVoice = voices.find(v => 
+        v.name.includes("Google US English") || 
+        v.name.includes("Samantha") || 
+        (v.name.includes("English") && v.name.includes("Female"))
+      );
+      if (preferredVoice) utterance.voice = preferredVoice;
+      
+      utterance.rate = 1.05;
+      
+      utterance.onstart = () => setAiStatus("speaking");
+      utterance.onend = () => setAiStatus("idle");
+      utterance.onerror = () => setAiStatus("idle");
+      
+      window.speechSynthesis.speak(utterance);
+    } else {
+      setAiStatus("idle");
+    }
+  }, []);
 
   const fetchNextQuestion = useCallback(
     async (
@@ -190,16 +222,14 @@ export default function InterviewSession({
         }
 
         if (data.isComplete || !data.question) {
-          setAiStatus("idle");
           setIsLoading(false);
+          const completionText = "Thank you for completing the interview! Let me prepare your results...";
           const finalMessages = [
             ...currentMessages,
-            createMessage(
-              "ai",
-              "Thank you for completing the interview! Let me prepare your results..."
-            ),
+            createMessage("ai", completionText),
           ];
           setMessages(finalMessages);
+          speakText(completionText);
 
           setTimeout(() => {
             if (isMountedRef.current) {
@@ -215,24 +245,23 @@ export default function InterviewSession({
         const aiMessage = createMessage("ai", data.question);
         setMessages((prev) => [...prev, aiMessage]);
         setQuestionCount((prev) => prev + 1);
-        setAiStatus("idle");
+        setIsLoading(false);
+        speakText(data.question);
       } catch (error: any) {
         if (error?.name === "AbortError") return;
         console.error("Failed to fetch question:", error);
         if (!isMountedRef.current) return;
-        const errorMessage = createMessage(
-          "ai",
-          "Sorry, I encountered an error. Let me try again..."
-        );
+        const errorText = "Sorry, I encountered an error. Let me try again...";
+        const errorMessage = createMessage("ai", errorText);
         setMessages((prev) => [...prev, errorMessage]);
-        setAiStatus("idle");
+        speakText(errorText);
       } finally {
         if (isMountedRef.current) {
           setIsLoading(false);
         }
       }
     },
-    [mode, onComplete, analyses]
+    [mode, onComplete, analyses, speakText]
   );
 
   // Fetch first question on mount
@@ -255,14 +284,14 @@ export default function InterviewSession({
       messages.filter((m) => m.role === "ai").slice(-1)[0]?.content;
 
     if (questionCount >= totalQuestions) {
-      setAiStatus("speaking");
+      const finalMsgText = "Great answers! Let me compile your results...";
+      const finalMsg = createMessage("ai", finalMsgText);
+      
       setTimeout(() => {
         if (!isMountedRef.current) return;
-        const finalMsg = createMessage(
-          "ai",
-          "Great answers! Let me compile your results..."
-        );
         setMessages((prev) => [...prev, finalMsg]);
+        speakText(finalMsgText);
+        
         setTimeout(() => {
           if (isMountedRef.current) {
             onComplete([...newMessages, finalMsg], analyses);
@@ -281,6 +310,7 @@ export default function InterviewSession({
     analyses,
     onComplete,
     fetchNextQuestion,
+    speakText,
   ]);
 
   const toggleRecording = useCallback(() => {
@@ -453,7 +483,9 @@ export default function InterviewSession({
               </div>
               <div className="flex items-center gap-1.5 mt-2">
                 <Volume2 className="w-3.5 h-3.5 text-primary" />
-                <span className="text-[9px] text-on-surface-variant">Optimal Range</span>
+                <span className="text-[9px] text-on-surface-variant">
+                  {diagnostics.cadence > 0 ? "Optimal Range" : "Awaiting Audio"}
+                </span>
               </div>
             </div>
 

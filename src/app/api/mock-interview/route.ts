@@ -32,15 +32,21 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Validate individual message lengths
+    // Sanitize user inputs to prevent basic prompt injections and strip raw HTML
+    const sanitizedMessages = messages.map(m => ({
+      ...m,
+      content: typeof m.content === "string" ? m.content.replace(/<[^>]*>?/gm, '').trim() : ""
+    }));
+
+    // Validate individual message lengths after sanitization
     if (
-      messages?.some(
+      sanitizedMessages.some(
         (m: { content?: string }) =>
-          typeof m.content !== "string" || m.content.length > 5000
+          typeof m.content !== "string" || m.content.length > 5000 || m.content.length === 0
       )
     ) {
       return NextResponse.json(
-        { error: "Message content too long (max 5000 chars)" },
+        { error: "Message content invalid or too long (max 5000 chars)" },
         { status: 400 }
       );
     }
@@ -53,14 +59,15 @@ export async function POST(request: NextRequest) {
 
       const questions =
         DEMO_INTERVIEW_QUESTIONS[mode as keyof typeof DEMO_INTERVIEW_QUESTIONS];
-      const questionIndex = Math.floor(messages.filter((m) => m.role === "ai").length);
+      const questionIndex = Math.floor(sanitizedMessages.filter((m) => m.role === "ai").length);
 
       let analysis: AnswerAnalysis | undefined;
 
       // Generate mock analysis for the user's last answer
-      if (messages.length > 0 && messages[messages.length - 1].role === "user") {
-        const userAnswer = messages[messages.length - 1].content;
-        const wordCount = userAnswer.split(" ").length;
+      if (sanitizedMessages.length > 0 && sanitizedMessages[sanitizedMessages.length - 1].role === "user") {
+        const userAnswers = sanitizedMessages.filter((m) => m.role === "user");
+        const lastAnswer = userAnswers[userAnswers.length - 1].content;
+        const wordCount = lastAnswer.split(" ").length;
 
         analysis = {
           confidenceScore: Math.min(95, Math.max(40, 60 + wordCount * 2)),
@@ -101,10 +108,10 @@ export async function POST(request: NextRequest) {
     // Analyze the user's last answer if there is one
     if (
       currentQuestion &&
-      messages.length > 0 &&
-      messages[messages.length - 1].role === "user"
+      sanitizedMessages.length > 0 &&
+      sanitizedMessages[sanitizedMessages.length - 1].role === "user"
     ) {
-      const userAnswer = messages[messages.length - 1].content;
+      const userAnswer = sanitizedMessages[sanitizedMessages.length - 1].content;
       const analysisPrompt = INTERVIEW_ANALYSIS_PROMPT.replace(
         "{question}",
         currentQuestion
@@ -141,14 +148,11 @@ export async function POST(request: NextRequest) {
 
     const openaiMessages: { role: "system" | "user" | "assistant"; content: string }[] = [
       { role: "system", content: systemPrompt },
+      ...sanitizedMessages.map((m: any) => ({
+        role: m.role === "ai" ? "assistant" : "user",
+        content: m.content,
+      })),
     ];
-
-    for (const msg of messages) {
-      openaiMessages.push({
-        role: msg.role === "ai" ? "assistant" : "user",
-        content: msg.content,
-      });
-    }
 
     const completion = await openai.chat.completions.create({
       model: "gemini-2.5-flash",

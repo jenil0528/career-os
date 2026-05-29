@@ -76,10 +76,38 @@ export async function POST(request: NextRequest) {
         : "Unable to extract meaningful text from this PDF. Please analyze based on a typical software engineer resume.";
 
     const OpenAI = (await import("openai")).default;
-    const openai = new OpenAI({ apiKey });
+    const openai = new OpenAI({ 
+      apiKey,
+      baseURL: "https://generativelanguage.googleapis.com/v1beta/openai/"
+    });
+
+    // Fetch real active jobs to feed to the AI
+    let realJobsContext = "";
+    try {
+      const remotiveRes = await fetch("https://remotive.com/api/remote-jobs?category=software-dev&limit=50", {
+        cache: "no-store" // Always fetch the freshest, newly arrived jobs
+      });
+      if (remotiveRes.ok) {
+        const data = await remotiveRes.json();
+        if (data && data.jobs) {
+          const simplifiedJobs = data.jobs.map((j: any) => ({
+            title: j.title,
+            company: j.company_name,
+            url: j.url,
+            salary: j.salary || "Competitive",
+            workMode: j.job_type === "full_time" ? "Remote (Full Time)" : "Remote",
+          }));
+          realJobsContext = `\n\n=== REAL ACTIVE JOBS ON THE MARKET ===\n${JSON.stringify(simplifiedJobs)}\n\nCRITICAL INSTRUCTION: You MUST select the 7 best matches exclusively from the "REAL ACTIVE JOBS ON THE MARKET" list above. Do NOT invent fake companies or roles. For each matched job, use its exact 'title' for the role, its exact 'company', and you MUST include a 'url' field in the JSON with the exact URL provided in the list. Use its salary and workMode as well.`;
+        }
+      }
+    } catch (err) {
+      console.error("Failed to fetch real jobs for AI context", err);
+    }
+
+    const finalPrompt = JOB_MATCH_PROMPT + realJobsContext + "\n\nResume text:\n" + resumeText;
 
     const completion = await openai.chat.completions.create({
-      model: "gpt-4o",
+      model: "gemini-2.5-flash",
       messages: [
         {
           role: "system",
@@ -88,7 +116,7 @@ export async function POST(request: NextRequest) {
         },
         {
           role: "user",
-          content: JOB_MATCH_PROMPT + resumeText,
+          content: finalPrompt,
         },
       ],
       temperature: 0.7,
