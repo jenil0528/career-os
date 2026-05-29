@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { DEMO_RESUME_ANALYSIS } from "@/lib/demo-data";
 import { RESUME_ANALYSIS_PROMPT } from "@/lib/prompts";
-import { getAIClient } from "@/lib/ai-client";
+import { getAIClient, parseAIResponse } from "@/lib/ai-client";
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 const ALLOWED_TYPES = ["application/pdf"];
@@ -103,35 +103,44 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(customizedReview);
     }
 
-    const completion = await openai.chat.completions.create({
-      model: aiModel as string,
-      messages: [
-        {
-          role: "system",
-          content: "You are an expert resume analyzer. Always respond with valid JSON only, no markdown formatting.",
-        },
-        {
-          role: "user",
-          content: RESUME_ANALYSIS_PROMPT + "\n\nCANDIDATE DATA:\n" + resumeText,
-        },
-      ],
-      temperature: 0.7,
-      max_tokens: 3000,
-      response_format: { type: "json_object" },
-    });
-
-    const responseText = completion.choices[0]?.message?.content;
+    let responseText;
+    try {
+      const completion = await openai.chat.completions.create({
+        model: aiModel as string,
+        messages: [
+          {
+            role: "system",
+            content: "You are an expert resume analyzer. Always respond with valid JSON only, no markdown formatting.",
+          },
+          {
+            role: "user",
+            content: RESUME_ANALYSIS_PROMPT + "\n\nCANDIDATE DATA:\n" + resumeText,
+          },
+        ],
+        temperature: 0.7,
+        max_tokens: 3000,
+        response_format: { type: "json_object" },
+      });
+      responseText = completion.choices[0]?.message?.content;
+    } catch (apiError: any) {
+      console.error("OpenAI API error:", apiError);
+      const customizedReview = JSON.parse(JSON.stringify(DEMO_RESUME_ANALYSIS));
+      customizedReview.recruiterFeedback = `(Note: AI API failed, showing demo data. Error: ${apiError.message || "Unknown"}). ` + customizedReview.recruiterFeedback;
+      return NextResponse.json(customizedReview);
+    }
     if (!responseText) {
       return NextResponse.json({ error: "No response from AI" }, { status: 500 });
     }
 
     let analysis;
     try {
-      analysis = JSON.parse(responseText);
-    } catch {
-      return NextResponse.json({ error: "Failed to parse AI response" }, { status: 500 });
+      analysis = parseAIResponse(responseText);
+    } catch (e) {
+      console.error("Failed to parse resume JSON:", responseText);
+      // Fallback to demo response gracefully if the AI fails to parse the raw PDF binary
+      analysis = JSON.parse(JSON.stringify(DEMO_RESUME_ANALYSIS));
+      analysis.recruiterFeedback = "Note: The AI had trouble reading the exact formatting of your PDF, so this is a demonstration analysis. " + analysis.recruiterFeedback;
     }
-
     return NextResponse.json(analysis);
   } catch (error) {
     console.error("Resume analysis error:", error);

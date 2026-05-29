@@ -4,7 +4,7 @@ import {
   INTERVIEW_SYSTEM_PROMPT,
   INTERVIEW_ANALYSIS_PROMPT,
 } from "@/lib/prompts";
-import { getAIClient } from "@/lib/ai-client";
+import { getAIClient, parseAIResponse } from "@/lib/ai-client";
 import type { InterviewMode, AnswerAnalysis } from "@/types";
 
 interface InterviewRequestBody {
@@ -113,28 +113,40 @@ export async function POST(request: NextRequest) {
         currentQuestion
       ).replace("{answer}", userAnswer);
 
-      const analysisCompletion = await openai.chat.completions.create({
-        model: aiModel as string,
-        messages: [
-          {
-            role: "system",
-            content:
-              "You are an interview coach. Respond with valid JSON only.",
-          },
-          { role: "user", content: analysisPrompt },
-        ],
-        temperature: 0.7,
-        max_tokens: 500,
-        response_format: { type: "json_object" },
-      });
+      try {
+        const analysisCompletion = await openai.chat.completions.create({
+          model: aiModel as string,
+          messages: [
+            {
+              role: "system",
+              content:
+                "You are an interview coach. Respond with valid JSON only.",
+            },
+            { role: "user", content: analysisPrompt },
+          ],
+          temperature: 0.7,
+          max_tokens: 500,
+          response_format: { type: "json_object" },
+        });
 
-      const analysisText = analysisCompletion.choices[0]?.message?.content;
-      if (analysisText) {
-        try {
-          analysis = JSON.parse(analysisText);
-        } catch {
-          // AI returned invalid JSON — skip analysis
+        const analysisText = analysisCompletion.choices[0]?.message?.content;
+        if (analysisText) {
+          try {
+            analysis = parseAIResponse(analysisText);
+          } catch (e) {
+            console.error("Failed to parse evaluation JSON:", analysisText);
+          }
         }
+      } catch (apiError: any) {
+        console.error("Analysis API failed:", apiError);
+        const wordCount = userAnswer.split(" ").length;
+        analysis = {
+          confidenceScore: Math.min(95, Math.max(40, 60 + wordCount * 2)),
+          communicationScore: Math.min(95, Math.max(45, 55 + wordCount * 3)),
+          technicalScore: Math.min(90, Math.max(35, 50 + wordCount)),
+          fillerWords: wordCount < 10 ? ["um", "like"] : [],
+          feedback: `(Note: AI API failed, showing demo evaluation. Error: ${apiError.message || "Unknown"}). Your answer had ${wordCount} words. Good effort.`,
+        };
       }
     }
 
@@ -150,14 +162,25 @@ export async function POST(request: NextRequest) {
       })),
     ];
 
-    const completion = await openai.chat.completions.create({
-      model: aiModel as string,
-      messages: openaiMessages,
-      temperature: 0.8,
-      max_tokens: 500,
-    });
-
-    const question = completion.choices[0]?.message?.content || null;
+    let question: string | null = "Can you elaborate on your experience? (API Fallback)";
+    try {
+      const completion = await openai.chat.completions.create({
+        model: aiModel as string,
+        messages: openaiMessages,
+        temperature: 0.8,
+        max_tokens: 500,
+      });
+      question = completion.choices[0]?.message?.content || question;
+    } catch (apiError: any) {
+      console.error("Question API failed:", apiError);
+      const questions = DEMO_INTERVIEW_QUESTIONS[mode as keyof typeof DEMO_INTERVIEW_QUESTIONS];
+      const questionIndex = Math.floor(sanitizedMessages.filter((m: any) => m.role === "ai").length);
+      if (questionIndex < questions.length) {
+        question = questions[questionIndex];
+      } else {
+        question = null;
+      }
+    }
 
     return NextResponse.json({
       question,

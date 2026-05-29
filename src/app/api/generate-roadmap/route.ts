@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { DEMO_ROADMAP } from "@/lib/demo-data";
 import { ROADMAP_PROMPT } from "@/lib/prompts";
-import { getAIClient } from "@/lib/ai-client";
+import { getAIClient, parseAIResponse } from "@/lib/ai-client";
 
 export async function POST(request: NextRequest) {
   try {
@@ -38,25 +38,33 @@ export async function POST(request: NextRequest) {
     // Real mode with OpenAI
     const prompt = ROADMAP_PROMPT.replace(/\{role\}/g, sanitizedRole);
 
-    const completion = await openai.chat.completions.create({
-      model: aiModel as string,
-      messages: [
-        {
-          role: "system",
-          content:
-            "You are a career counselor. Always respond with valid JSON only, no markdown formatting.",
-        },
-        {
-          role: "user",
-          content: prompt,
-        },
-      ],
-      temperature: 0.7,
-      max_tokens: 8192,
-      response_format: { type: "json_object" },
-    });
-
-    const responseText = completion.choices[0]?.message?.content;
+    let responseText;
+    try {
+      const completion = await openai.chat.completions.create({
+        model: aiModel as string,
+        messages: [
+          {
+            role: "system",
+            content:
+              "You are a career counselor. Always respond with valid JSON only, no markdown formatting.",
+          },
+          {
+            role: "user",
+            content: prompt,
+          },
+        ],
+        temperature: 0.7,
+        max_tokens: 8192,
+        response_format: { type: "json_object" },
+      });
+      responseText = completion.choices[0]?.message?.content;
+    } catch (apiError: any) {
+      console.error("OpenAI API error:", apiError);
+      return NextResponse.json({
+        ...DEMO_ROADMAP,
+        role: sanitizedRole,
+      });
+    }
     if (!responseText) {
       return NextResponse.json(
         { error: "No response from AI" },
@@ -66,17 +74,14 @@ export async function POST(request: NextRequest) {
 
     // Clean the response text to remove any markdown formatting (e.g. ```json ... ```)
     let cleanText = responseText;
-    if (cleanText.startsWith("```json")) {
-      cleanText = cleanText.substring(7);
-    } else if (cleanText.startsWith("```")) {
-      cleanText = cleanText.substring(3);
+    let roadmap;
+    try {
+      roadmap = parseAIResponse(responseText);
+    } catch (e) {
+      console.error("Failed to parse roadmap JSON:", responseText);
+      return NextResponse.json({ error: "Failed to parse roadmap format" }, { status: 500 });
     }
-    if (cleanText.endsWith("```")) {
-      cleanText = cleanText.substring(0, cleanText.length - 3);
-    }
-    cleanText = cleanText.trim();
 
-    const roadmap = JSON.parse(cleanText);
     return NextResponse.json(roadmap);
   } catch (error) {
     console.error("Roadmap generation error:", error);
