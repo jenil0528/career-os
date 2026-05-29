@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { motion } from "motion/react";
 import { useUserCompat as useUser } from "@/lib/auth-shim";
+import { useTheme } from "@/components/shared/ThemeProvider";
 import { cn } from "@/lib/utils";
 import {
   User,
@@ -44,17 +45,10 @@ export default function SettingsPage() {
     } catch { /* ignore */ }
     return "";
   });
-  const [darkMode, setDarkMode] = useState(() => {
-    if (typeof window === "undefined") return true;
-    try {
-      const stored = localStorage.getItem("careeros_settings");
-      if (stored) {
-        const val = JSON.parse(stored).darkMode;
-        return typeof val === "boolean" ? val : true;
-      }
-    } catch { /* ignore */ }
-    return true;
-  });
+  
+  const { theme, toggleTheme } = useTheme();
+  const isDarkMode = theme === "cyber";
+
   const [notifications, setNotifications] = useState(() => {
     if (typeof window === "undefined") return true;
     try {
@@ -72,7 +66,7 @@ export default function SettingsPage() {
     try {
       localStorage.setItem(
         "careeros_settings",
-        JSON.stringify({ apiKey, darkMode, notifications })
+        JSON.stringify({ apiKey, notifications })
       );
       setSaved(true);
       setTimeout(() => setSaved(false), 2000);
@@ -212,16 +206,16 @@ export default function SettingsPage() {
               </div>
             </div>
             <button
-              onClick={() => setDarkMode(!darkMode)}
+              onClick={toggleTheme}
               className={cn(
                 "relative w-12 h-6 border transition-colors duration-300 rounded-none cursor-pointer",
-                darkMode ? "bg-primary border-primary" : "bg-surface-variant border-outline-variant"
+                isDarkMode ? "bg-primary border-primary" : "bg-surface-variant border-outline-variant"
               )}
             >
               <div
                 className={cn(
                   "absolute top-0.5 w-4 h-4 bg-on-primary transition-transform duration-300 rounded-none",
-                  darkMode ? "translate-x-[26px]" : "translate-x-1 bg-on-surface-variant"
+                  isDarkMode ? "translate-x-[26px]" : "translate-x-1 bg-on-surface-variant"
                 )}
               />
             </button>
