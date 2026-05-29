@@ -1,43 +1,52 @@
-# 🚀 CareerOS — Your AI Placement Agent
+<div align="center">
+  <h1>🚀 CareerOS — Your AI Placement Agent</h1>
+  <p><strong>Ace interviews, optimize resumes, and build your career with AI.</strong></p>
+  
+  <p>
+    <a href="https://career-os-ivory.vercel.app/dashboard" target="_blank">
+      <img src="https://img.shields.io/badge/🔴_Live_Demo-career--os--ivory.vercel.app-FF0000?style=for-the-badge&logo=vercel&logoColor=white" alt="Live Demo" />
+    </a>
+  </p>
 
-> Ace interviews, optimize resumes, and build your career with AI.
-
-CareerOS is a modern, AI-powered web application that acts as your personal placement assistant — combining a **Resume Analyzer**, **Mock Interviewer**, and **Career Roadmap Generator** into one beautiful platform.
-
-![Next.js](https://img.shields.io/badge/Next.js-16-black?logo=next.js)
-![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?logo=typescript)
-![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4-38bdf8?logo=tailwindcss)
-![OpenAI](https://img.shields.io/badge/OpenAI-GPT--4o-412991?logo=openai)
+  <p>
+    <img src="https://img.shields.io/badge/Next.js-15-black?style=flat-square&logo=next.js" alt="Next.js" />
+    <img src="https://img.shields.io/badge/TypeScript-5-blue?style=flat-square&logo=typescript" alt="TypeScript" />
+    <img src="https://img.shields.io/badge/Tailwind_CSS-4-38bdf8?style=flat-square&logo=tailwindcss" alt="Tailwind CSS" />
+    <img src="https://img.shields.io/badge/OpenAI-GPT--4o-412991?style=flat-square&logo=openai" alt="OpenAI" />
+  </p>
+</div>
 
 ---
+
+CareerOS is a modern, AI-powered web application that acts as your personal placement assistant — combining a **Resume Analyzer**, **Mock Interviewer**, and **Career Roadmap Generator** into one beautiful platform.
 
 ## ✨ Features
 
 ### 📄 AI Resume Analyzer
-- Upload PDF resume and get instant AI analysis
-- **ATS Score** with detailed section-by-section breakdown
-- Strengths, weaknesses, and missing keywords
-- Professional recruiter feedback + 🔥 Roast Mode
-- Actionable improvement suggestions
+- Upload PDF resume and get instant AI analysis.
+- **ATS Score** with a detailed section-by-section breakdown.
+- Strengths, weaknesses, and missing keywords identification.
+- Professional recruiter feedback + 🔥 **Roast Mode**.
+- Actionable improvement suggestions.
 
 ### 🎤 AI Mock Interviewer
-- **3 Interview Modes**: HR, Technical, Startup Founder
-- Real-time conversational AI that adapts to your answers
-- Voice input via Web Speech API
-- Animated AI avatar with speaking/listening states
-- Detailed scoring: Communication, Confidence, Technical
+- **3 Interview Modes**: HR, Technical, Startup Founder.
+- Real-time conversational AI that adapts to your answers.
+- Voice input via Web Speech API.
+- Animated AI avatar with speaking/listening states.
+- Detailed scoring: Communication, Confidence, Technical.
 
 ### 🗺️ Career Roadmap Generator
-- Choose from 5+ career paths (AI Engineer, Frontend Dev, Data Scientist, etc.)
-- AI-generated learning roadmap with phases, skills, projects
-- Progress tracking with milestone markers
-- Curated resources, certifications, and timelines
+- Choose from 5+ career paths (AI Engineer, Frontend Dev, Data Scientist, etc.).
+- AI-generated learning roadmap with phases, skills, projects.
+- Progress tracking with milestone markers.
+- Curated resources, certifications, and timelines.
 
 ### 📊 Smart Dashboard
-- Animated charts and progress indicators
-- AI-powered suggestions and recommendations
-- Job recommendations with match percentages
-- Activity tracking across all features
+- Animated charts and progress indicators.
+- AI-powered suggestions and recommendations.
+- Job recommendations with match percentages.
+- Activity tracking across all features.
 
 ---
 
@@ -153,29 +162,6 @@ careeros/
 - **Effects**: Glow shadows, gradient borders, animated backgrounds
 - **Animations**: Smooth page transitions, staggered reveals, floating elements
 - **Typography**: Inter (body) + Space Grotesk (headings)
-
----
-
-## 🚢 Deployment
-
-### Deploy to Vercel
-
-```bash
-# Install Vercel CLI
-npm i -g vercel
-
-# Deploy
-vercel
-```
-
-Or connect your GitHub repo to [vercel.com](https://vercel.com) for automatic deployments.
-
-### Build for Production
-
-```bash
-npm run build
-npm run start
-```
 
 ---
 
