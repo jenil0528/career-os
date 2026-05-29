@@ -161,14 +161,14 @@ export default function SettingsPage() {
 
         <div className="space-y-2 relative z-10 max-w-2xl">
           <label className="font-mono-label text-[10px] text-on-surface-variant uppercase tracking-widest flex items-center gap-2">
-            <Shield className="w-3 h-3 text-primary" /> OpenAI Private Key
+            <Shield className="w-3 h-3 text-primary" /> AI API Key (Gemini or OpenAI)
           </label>
           <div className="relative">
             <input
               type={showApiKey ? "text" : "password"}
               value={apiKey}
               onChange={(e) => setApiKey(e.target.value)}
-              placeholder="sk-..."
+              placeholder="sk-... or AIza..."
               className={cn(
                 "w-full px-4 py-3 pr-12 bg-surface-container-highest border border-outline-variant",
                 "text-on-surface placeholder:text-on-surface-variant/50",
@@ -184,7 +184,7 @@ export default function SettingsPage() {
             </button>
           </div>
           <p className="font-mono-label text-[9px] text-primary mt-2 uppercase tracking-widest">
-            <span className="text-error mr-1">WARNING:</span> Key is stored in local browser cache. It is never transmitted to external servers except OpenAI.
+            <span className="text-error mr-1">WARNING:</span> Key is stored in local browser cache. Models will automatically switch based on the key type.
           </p>
         </div>
       </motion.div>

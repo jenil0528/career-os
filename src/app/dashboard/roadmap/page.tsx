@@ -20,9 +20,15 @@ export default function RoadmapPage() {
     setIsLoading(true);
     setError(null);
     try {
+      let customHeaders: Record<string, string> = { "Content-Type": "application/json" };
+      try {
+        const settings = JSON.parse(localStorage.getItem("careeros_settings") || "{}");
+        if (settings.apiKey) customHeaders["x-user-api-key"] = settings.apiKey;
+      } catch (e) { /* ignore */ }
+
       const res = await fetch("/api/generate-roadmap", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: customHeaders,
         body: JSON.stringify({ role }),
       });
       const data = await res.json();

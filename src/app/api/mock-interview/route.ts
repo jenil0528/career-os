@@ -4,6 +4,7 @@ import {
   INTERVIEW_SYSTEM_PROMPT,
   INTERVIEW_ANALYSIS_PROMPT,
 } from "@/lib/prompts";
+import { getAIClient } from "@/lib/ai-client";
 import type { InterviewMode, AnswerAnalysis } from "@/types";
 
 interface InterviewRequestBody {
@@ -51,9 +52,9 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const apiKey = process.env.OPENAI_API_KEY;
+    const { openai, model: aiModel, apiKey } = await getAIClient(request);
 
-    if (!apiKey) {
+    if (!openai || !apiKey) {
       // Demo mode
       await new Promise((resolve) => setTimeout(resolve, 1500));
 
@@ -97,11 +98,6 @@ export async function POST(request: NextRequest) {
     }
 
     // Real mode with OpenAI
-    const OpenAI = (await import("openai")).default;
-    const openai = new OpenAI({ 
-      apiKey,
-      baseURL: "https://generativelanguage.googleapis.com/v1beta/openai/"
-    });
 
     let analysis: AnswerAnalysis | undefined;
 
@@ -118,7 +114,7 @@ export async function POST(request: NextRequest) {
       ).replace("{answer}", userAnswer);
 
       const analysisCompletion = await openai.chat.completions.create({
-        model: "gemini-2.5-flash",
+        model: aiModel as string,
         messages: [
           {
             role: "system",
@@ -155,7 +151,7 @@ export async function POST(request: NextRequest) {
     ];
 
     const completion = await openai.chat.completions.create({
-      model: "gemini-2.5-flash",
+      model: aiModel as string,
       messages: openaiMessages,
       temperature: 0.8,
       max_tokens: 500,

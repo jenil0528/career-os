@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { DEMO_ROADMAP } from "@/lib/demo-data";
 import { ROADMAP_PROMPT } from "@/lib/prompts";
+import { getAIClient } from "@/lib/ai-client";
 
 export async function POST(request: NextRequest) {
   try {
@@ -23,9 +24,9 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const apiKey = process.env.OPENAI_API_KEY;
+    const { openai, model: aiModel, apiKey } = await getAIClient(request);
 
-    if (!apiKey) {
+    if (!openai || !apiKey) {
       // Demo mode: return demo roadmap with the selected role name
       await new Promise((resolve) => setTimeout(resolve, 2000));
       return NextResponse.json({
@@ -35,16 +36,10 @@ export async function POST(request: NextRequest) {
     }
 
     // Real mode with OpenAI
-    const OpenAI = (await import("openai")).default;
-    const openai = new OpenAI({ 
-      apiKey,
-      baseURL: "https://generativelanguage.googleapis.com/v1beta/openai/"
-    });
-
     const prompt = ROADMAP_PROMPT.replace(/\{role\}/g, sanitizedRole);
 
     const completion = await openai.chat.completions.create({
-      model: "gemini-2.5-flash",
+      model: aiModel as string,
       messages: [
         {
           role: "system",

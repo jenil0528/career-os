@@ -28,9 +28,16 @@ export default function ResumePage() {
       if (file) formData.append("resume", file);
       if (githubUrl) formData.append("githubUrl", githubUrl);
 
+      let customHeaders: Record<string, string> = {};
+      try {
+        const settings = JSON.parse(localStorage.getItem("careeros_settings") || "{}");
+        if (settings.apiKey) customHeaders["x-user-api-key"] = settings.apiKey;
+      } catch (e) { /* ignore */ }
+
       const res = await fetch("/api/analyze-resume", {
         method: "POST",
         body: formData,
+        headers: customHeaders,
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Failed to analyze");

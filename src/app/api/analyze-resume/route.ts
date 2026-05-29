@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { DEMO_RESUME_ANALYSIS } from "@/lib/demo-data";
 import { RESUME_ANALYSIS_PROMPT } from "@/lib/prompts";
+import { getAIClient } from "@/lib/ai-client";
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 const ALLOWED_TYPES = ["application/pdf"];
@@ -74,9 +75,9 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    const apiKey = process.env.OPENAI_API_KEY;
+    const { openai, model: aiModel, apiKey } = await getAIClient(request);
 
-    if (!apiKey) {
+    if (!openai || !apiKey) {
       await new Promise((resolve) => setTimeout(resolve, 2000));
       const customizedReview = JSON.parse(JSON.stringify(DEMO_RESUME_ANALYSIS));
       
@@ -102,14 +103,8 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(customizedReview);
     }
 
-    const OpenAI = (await import("openai")).default;
-    const openai = new OpenAI({ 
-      apiKey,
-      baseURL: "https://generativelanguage.googleapis.com/v1beta/openai/"
-    });
-
     const completion = await openai.chat.completions.create({
-      model: "gemini-2.5-flash",
+      model: aiModel as string,
       messages: [
         {
           role: "system",

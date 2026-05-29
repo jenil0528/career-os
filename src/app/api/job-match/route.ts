@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { DEMO_JOB_MATCH_RESULT } from "@/lib/demo-data";
 import { JOB_MATCH_PROMPT } from "@/lib/prompts";
+import { getAIClient } from "@/lib/ai-client";
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 const ALLOWED_TYPES = ["application/pdf"];
@@ -52,9 +53,9 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const apiKey = process.env.OPENAI_API_KEY;
+    const { openai, model: aiModel, apiKey } = await getAIClient(request);
 
-    if (!apiKey) {
+    if (!openai || !apiKey) {
       // Demo mode: simulate processing delay
       await new Promise((resolve) => setTimeout(resolve, 2500));
       return NextResponse.json(DEMO_JOB_MATCH_RESULT);
@@ -74,12 +75,6 @@ export async function POST(request: NextRequest) {
       cleanedText.length > 100
         ? cleanedText.slice(0, 8000)
         : "Unable to extract meaningful text from this PDF. Please analyze based on a typical software engineer resume.";
-
-    const OpenAI = (await import("openai")).default;
-    const openai = new OpenAI({ 
-      apiKey,
-      baseURL: "https://generativelanguage.googleapis.com/v1beta/openai/"
-    });
 
     // Fetch real active jobs to feed to the AI
     let realJobsContext = "";
@@ -107,7 +102,7 @@ export async function POST(request: NextRequest) {
     const finalPrompt = JOB_MATCH_PROMPT + realJobsContext + "\n\nResume text:\n" + resumeText;
 
     const completion = await openai.chat.completions.create({
-      model: "gemini-2.5-flash",
+      model: aiModel as string,
       messages: [
         {
           role: "system",

@@ -79,9 +79,16 @@ export default function ResumeUploader({
       const formData = new FormData();
       formData.append("resume", file);
 
+      let customHeaders: Record<string, string> = {};
+      try {
+        const settings = JSON.parse(localStorage.getItem("careeros_settings") || "{}");
+        if (settings.apiKey) customHeaders["x-user-api-key"] = settings.apiKey;
+      } catch (e) { /* ignore */ }
+
       const response = await fetch("/api/analyze-resume", {
         method: "POST",
         body: formData,
+        headers: customHeaders,
       });
 
       if (!response.ok) {

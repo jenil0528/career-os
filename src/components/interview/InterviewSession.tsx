@@ -195,9 +195,15 @@ export default function InterviewSession({
       abortControllerRef.current = controller;
 
       try {
+        let customHeaders: Record<string, string> = { "Content-Type": "application/json" };
+        try {
+          const settings = JSON.parse(localStorage.getItem("careeros_settings") || "{}");
+          if (settings.apiKey) customHeaders["x-user-api-key"] = settings.apiKey;
+        } catch (e) { /* ignore */ }
+
         const response = await fetch("/api/mock-interview", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: customHeaders,
           body: JSON.stringify({
             mode,
             messages: currentMessages.map((m) => ({

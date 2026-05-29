@@ -327,7 +327,13 @@ export default function JobMatchPage() {
     try {
       const formData = new FormData();
       formData.append("resume", file);
-      const res = await fetch("/api/job-match", { method: "POST", body: formData });
+      let customHeaders: Record<string, string> = {};
+      try {
+        const settings = JSON.parse(localStorage.getItem("careeros_settings") || "{}");
+        if (settings.apiKey) customHeaders["x-user-api-key"] = settings.apiKey;
+      } catch (e) { /* ignore */ }
+
+      const res = await fetch("/api/job-match", { method: "POST", body: formData, headers: customHeaders });
       if (!res.ok) {
         const errData = await res.json();
         throw new Error(errData.error || "Failed to analyze");
