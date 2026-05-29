@@ -56,9 +56,10 @@ export async function POST(request: NextRequest) {
     const { openai, model: aiModel, apiKey } = await getAIClient(request);
 
     if (!openai || !apiKey) {
-      // Demo mode: simulate processing delay
-      await new Promise((resolve) => setTimeout(resolve, 2500));
-      return NextResponse.json(DEMO_JOB_MATCH_RESULT);
+      return NextResponse.json(
+        { error: "No API key configured. Please add an OpenAI or Gemini API key in settings." },
+        { status: 401 }
+      );
     }
 
     // Real mode: Extract text from the uploaded file
@@ -123,9 +124,10 @@ export async function POST(request: NextRequest) {
       responseText = completion.choices[0]?.message?.content;
     } catch (apiError: any) {
       console.error("OpenAI API error:", apiError);
-      const analysis = JSON.parse(JSON.stringify(DEMO_JOB_MATCH_RESULT));
-      analysis.recommendations.personalizedMessage = `(Note: AI API failed, showing demo data. Error: ${apiError.message || "Unknown"}). ` + analysis.recommendations.personalizedMessage;
-      return NextResponse.json(analysis);
+      return NextResponse.json(
+        { error: `AI processing failed: ${apiError.message || "Unknown error"}` },
+        { status: 500 }
+      );
     }
     if (!responseText) {
       return NextResponse.json(
@@ -139,8 +141,10 @@ export async function POST(request: NextRequest) {
       analysis = parseAIResponse(responseText);
     } catch (parseError) {
       console.error("JSON Parse Error. Raw response was:", responseText);
-      analysis = JSON.parse(JSON.stringify(DEMO_JOB_MATCH_RESULT));
-      analysis.recommendations.personalizedMessage = "Note: The AI had trouble reading the exact formatting of your PDF, so we are showing a demonstration result. " + analysis.recommendations.personalizedMessage;
+      return NextResponse.json(
+        { error: "AI returned invalid format. Please try again." },
+        { status: 500 }
+      );
     }
 
     return NextResponse.json(analysis);

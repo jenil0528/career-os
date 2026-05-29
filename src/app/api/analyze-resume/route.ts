@@ -78,29 +78,10 @@ export async function POST(request: NextRequest) {
     const { openai, model: aiModel, apiKey } = await getAIClient(request);
 
     if (!openai || !apiKey) {
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-      const customizedReview = JSON.parse(JSON.stringify(DEMO_RESUME_ANALYSIS));
-      
-      if (githubData) {
-         customizedReview.strengths.unshift(`Active open-source contributor with ${githubData.user.public_repos} public repositories`);
-         if (githubData.user.followers > 10) {
-            customizedReview.strengths.unshift(`Strong developer community presence (${githubData.user.followers} followers)`);
-         }
-         
-         const languages = [...new Set(githubData.repos.map((r: any) => r.language).filter(Boolean))];
-         if (languages.length > 0) {
-            customizedReview.foundKeywords = [...new Set([...customizedReview.foundKeywords, ...(languages as string[])])];
-            customizedReview.recruiterFeedback = `The candidate has a verified GitHub profile (@${githubData.user.login}). I can see hands-on experience in ${languages.join(", ")} based on their recent repos like ${githubData.repos[0]?.name}. ` + customizedReview.recruiterFeedback;
-            
-            customizedReview.sections.projects.score = 92;
-            customizedReview.sections.projects.feedback = `Excellent! Verified GitHub profile with ${githubData.user.public_repos} repos including ${githubData.repos.map((r: any) => r.name).slice(0, 2).join(" and ")}.`;
-         }
-      } else if (file) {
-         customizedReview.recruiterFeedback = `I reviewed the uploaded document (${file.name}). ` + customizedReview.recruiterFeedback;
-         customizedReview.sections.formatting.feedback = `PDF parsed successfully. The document structure was maintained well during extraction.`;
-      }
-      
-      return NextResponse.json(customizedReview);
+      return NextResponse.json(
+        { error: "No API key configured. Please add an OpenAI or Gemini API key in settings." },
+        { status: 401 }
+      );
     }
 
     let responseText;
@@ -124,9 +105,10 @@ export async function POST(request: NextRequest) {
       responseText = completion.choices[0]?.message?.content;
     } catch (apiError: any) {
       console.error("OpenAI API error:", apiError);
-      const customizedReview = JSON.parse(JSON.stringify(DEMO_RESUME_ANALYSIS));
-      customizedReview.recruiterFeedback = `(Note: AI API failed, showing demo data. Error: ${apiError.message || "Unknown"}). ` + customizedReview.recruiterFeedback;
-      return NextResponse.json(customizedReview);
+      return NextResponse.json(
+        { error: `AI processing failed: ${apiError.message || "Unknown error"}` },
+        { status: 500 }
+      );
     }
     if (!responseText) {
       return NextResponse.json({ error: "No response from AI" }, { status: 500 });
@@ -137,9 +119,10 @@ export async function POST(request: NextRequest) {
       analysis = parseAIResponse(responseText);
     } catch (e) {
       console.error("Failed to parse resume JSON:", responseText);
-      // Fallback to demo response gracefully if the AI fails to parse the raw PDF binary
-      analysis = JSON.parse(JSON.stringify(DEMO_RESUME_ANALYSIS));
-      analysis.recruiterFeedback = "Note: The AI had trouble reading the exact formatting of your PDF, so this is a demonstration analysis. " + analysis.recruiterFeedback;
+      return NextResponse.json(
+        { error: "AI returned invalid format. Please try again." },
+        { status: 500 }
+      );
     }
     return NextResponse.json(analysis);
   } catch (error) {

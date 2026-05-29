@@ -27,12 +27,10 @@ export async function POST(request: NextRequest) {
     const { openai, model: aiModel, apiKey } = await getAIClient(request);
 
     if (!openai || !apiKey) {
-      // Demo mode: return demo roadmap with the selected role name
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-      return NextResponse.json({
-        ...DEMO_ROADMAP,
-        role: sanitizedRole,
-      });
+      return NextResponse.json(
+        { error: "No API key configured. Please add an OpenAI or Gemini API key in settings." },
+        { status: 401 }
+      );
     }
 
     // Real mode with OpenAI
@@ -60,10 +58,10 @@ export async function POST(request: NextRequest) {
       responseText = completion.choices[0]?.message?.content;
     } catch (apiError: any) {
       console.error("OpenAI API error:", apiError);
-      return NextResponse.json({
-        ...DEMO_ROADMAP,
-        role: sanitizedRole,
-      });
+      return NextResponse.json(
+        { error: `AI processing failed: ${apiError.message || "Unknown error"}` },
+        { status: 500 }
+      );
     }
     if (!responseText) {
       return NextResponse.json(
