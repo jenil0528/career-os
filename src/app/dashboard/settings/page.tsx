@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { motion } from "motion/react";
-import { useAuth } from "@/lib/auth-context";
+import { useUserCompat as useUser } from "@/lib/auth-shim";
 import { cn } from "@/lib/utils";
 import {
   User,
@@ -15,6 +15,7 @@ import {
   Shield,
   Save,
   Check,
+  Terminal,
 } from "lucide-react";
 
 const container = {
@@ -26,15 +27,15 @@ const container = {
 };
 
 const item = {
-  hidden: { opacity: 0, y: 20 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.33, 1, 0.68, 1] as const } },
+  hidden: { opacity: 0, y: 10 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.4, ease: "easeOut" as const } },
 };
 
 export default function SettingsPage() {
-  const { user } = useAuth();
+  const { user } = useUser();
   const [showApiKey, setShowApiKey] = useState(false);
 
-  // Lazy initialization from localStorage — avoids setState-in-effect
+  // Lazy initialization from localStorage
   const [apiKey, setApiKey] = useState(() => {
     if (typeof window === "undefined") return "";
     try {
@@ -76,7 +77,6 @@ export default function SettingsPage() {
       setSaved(true);
       setTimeout(() => setSaved(false), 2000);
     } catch {
-      // Storage error — still show visual feedback
       setSaved(true);
       setTimeout(() => setSaved(false), 2000);
     }
@@ -87,219 +87,191 @@ export default function SettingsPage() {
       variants={container}
       initial="hidden"
       animate="show"
-      className="space-y-8 max-w-3xl mx-auto"
+      className="space-y-6 max-w-4xl p-6 md:p-8 font-body-md"
     >
       {/* Header */}
-      <motion.div variants={item}>
-        <h1 className="text-3xl font-bold text-white">Settings</h1>
-        <p className="text-slate-400 mt-1">
-          Manage your account preferences and configuration
+      <motion.div variants={item} className="border-b border-outline-variant pb-6">
+        <h1 className="font-headline-lg text-headline-lg text-on-surface font-bold uppercase tracking-widest flex items-center gap-3">
+          <Terminal className="w-8 h-8 text-primary" />
+          System Configuration
+        </h1>
+        <p className="text-on-surface-variant font-mono-label text-sm mt-2 uppercase tracking-widest">
+          Manage identity parameters and telemetry protocols
         </p>
       </motion.div>
 
       {/* Profile Section */}
-      <motion.div variants={item} className="glass rounded-2xl p-6 space-y-5">
-        <div className="flex items-center gap-3 mb-2">
-          <div className="w-10 h-10 rounded-xl bg-blue-500/10 flex items-center justify-center">
-            <User className="w-5 h-5 text-blue-400" />
+      <motion.div variants={item} className="bg-surface-container-low border border-outline-variant rounded-none p-6 space-y-6 relative overflow-hidden shadow-[8px_8px_0px_0px_rgba(16,185,129,0.1)]">
+        <div className="absolute top-0 right-0 p-2 opacity-10">
+          <User className="w-32 h-32" />
+        </div>
+        
+        <div className="flex items-center gap-3 border-b border-outline-variant pb-4 relative z-10">
+          <div className="w-10 h-10 bg-primary/10 border border-primary/30 flex items-center justify-center text-primary">
+            <User className="w-5 h-5" />
           </div>
           <div>
-            <h2 className="text-lg font-semibold text-white">Profile</h2>
-            <p className="text-xs text-slate-400">
-              Your personal information (read-only in demo)
-            </p>
+            <h2 className="text-lg font-bold text-on-surface uppercase tracking-widest">Executive Profile</h2>
+            <p className="font-mono-label text-[10px] text-primary uppercase">Read-only identity metrics</p>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 relative z-10">
           <div className="space-y-2">
-            <label className="text-sm font-medium text-slate-300 flex items-center gap-1.5">
-              <User className="w-3.5 h-3.5 text-slate-500" />
-              Full Name
+            <label className="font-mono-label text-[10px] text-on-surface-variant uppercase tracking-widest flex items-center gap-2">
+              <User className="w-3 h-3" /> Designated Name
             </label>
             <input
               type="text"
-              value={user?.name ?? "Guest User"}
+              value={user?.firstName && user?.lastName ? `${user.firstName} ${user.lastName}` : "Executive Guest"}
               readOnly
-              className={cn(
-                "w-full px-4 py-2.5 rounded-xl",
-                "bg-white/5 border border-white/10",
-                "text-white/70 cursor-not-allowed",
-                "focus:outline-none"
-              )}
+              className="w-full px-4 py-3 bg-surface-container border border-outline-variant text-on-surface cursor-not-allowed focus:outline-none font-bold"
             />
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm font-medium text-slate-300 flex items-center gap-1.5">
-              <Mail className="w-3.5 h-3.5 text-slate-500" />
-              Email Address
+            <label className="font-mono-label text-[10px] text-on-surface-variant uppercase tracking-widest flex items-center gap-2">
+              <Mail className="w-3 h-3" /> Encrypted Comms (Email)
             </label>
             <input
               type="email"
-              value={user?.email ?? "guest@careeros.ai"}
+              value={user?.primaryEmailAddress?.emailAddress ?? "guest@careeros.system"}
               readOnly
-              className={cn(
-                "w-full px-4 py-2.5 rounded-xl",
-                "bg-white/5 border border-white/10",
-                "text-white/70 cursor-not-allowed",
-                "focus:outline-none"
-              )}
+              className="w-full px-4 py-3 bg-surface-container border border-outline-variant text-on-surface cursor-not-allowed focus:outline-none font-mono"
             />
-          </div>
-        </div>
-
-        {/* Avatar preview */}
-        <div className="flex items-center gap-4 pt-2">
-          <div className="w-14 h-14 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white text-xl font-bold shadow-lg shadow-blue-500/20">
-            {user?.name?.charAt(0) ?? "G"}
-          </div>
-          <div>
-            <p className="text-sm text-white font-medium">{user?.name ?? "Guest"}</p>
-            <p className="text-xs text-slate-500">Member since May 2026</p>
           </div>
         </div>
       </motion.div>
 
       {/* API Keys Section */}
-      <motion.div variants={item} className="glass rounded-2xl p-6 space-y-5">
-        <div className="flex items-center gap-3 mb-2">
-          <div className="w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center">
-            <Key className="w-5 h-5 text-purple-400" />
+      <motion.div variants={item} className="bg-surface-container-low border border-outline-variant rounded-none p-6 space-y-6 relative overflow-hidden shadow-[8px_8px_0px_0px_rgba(16,185,129,0.1)]">
+        <div className="absolute top-0 right-0 p-2 opacity-10">
+          <Key className="w-32 h-32" />
+        </div>
+
+        <div className="flex items-center gap-3 border-b border-outline-variant pb-4 relative z-10">
+          <div className="w-10 h-10 bg-primary/10 border border-primary/30 flex items-center justify-center text-primary">
+            <Key className="w-5 h-5" />
           </div>
           <div>
-            <h2 className="text-lg font-semibold text-white">API Keys</h2>
-            <p className="text-xs text-slate-400">
-              Configure your AI provider keys
-            </p>
+            <h2 className="text-lg font-bold text-on-surface uppercase tracking-widest">Security Credentials</h2>
+            <p className="font-mono-label text-[10px] text-primary uppercase">Provider Access Keys</p>
           </div>
         </div>
 
-        <div className="space-y-2">
-          <label className="text-sm font-medium text-slate-300 flex items-center gap-1.5">
-            <Shield className="w-3.5 h-3.5 text-slate-500" />
-            OpenAI API Key
+        <div className="space-y-2 relative z-10 max-w-2xl">
+          <label className="font-mono-label text-[10px] text-on-surface-variant uppercase tracking-widest flex items-center gap-2">
+            <Shield className="w-3 h-3 text-primary" /> OpenAI Private Key
           </label>
           <div className="relative">
             <input
               type={showApiKey ? "text" : "password"}
               value={apiKey}
               onChange={(e) => setApiKey(e.target.value)}
+              placeholder="sk-..."
               className={cn(
-                "w-full px-4 py-2.5 pr-12 rounded-xl",
-                "bg-white/5 border border-white/10",
-                "text-white placeholder:text-slate-500",
-                "focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/50",
-                "transition-all duration-300 font-mono text-sm"
+                "w-full px-4 py-3 pr-12 bg-surface-container-highest border border-outline-variant",
+                "text-on-surface placeholder:text-on-surface-variant/50",
+                "focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary",
+                "transition-all font-mono text-sm"
               )}
             />
             <button
               onClick={() => setShowApiKey(!showApiKey)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded-lg text-slate-500 hover:text-slate-300 transition-colors"
+              className="absolute right-3 top-1/2 -translate-y-1/2 p-2 text-on-surface-variant hover:text-primary transition-colors cursor-pointer"
             >
-              {showApiKey ? (
-                <EyeOff className="w-4 h-4" />
-              ) : (
-                <Eye className="w-4 h-4" />
-              )}
+              {showApiKey ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
             </button>
           </div>
-          <p className="text-xs text-slate-500">
-            Your API key is stored locally and never sent to our servers.
+          <p className="font-mono-label text-[9px] text-primary mt-2 uppercase tracking-widest">
+            <span className="text-error mr-1">WARNING:</span> Key is stored in local browser cache. It is never transmitted to external servers except OpenAI.
           </p>
         </div>
       </motion.div>
 
       {/* Preferences Section */}
-      <motion.div variants={item} className="glass rounded-2xl p-6 space-y-5">
-        <div className="flex items-center gap-3 mb-2">
-          <div className="w-10 h-10 rounded-xl bg-cyan-500/10 flex items-center justify-center">
-            <Moon className="w-5 h-5 text-cyan-400" />
+      <motion.div variants={item} className="bg-surface-container-low border border-outline-variant rounded-none p-6 space-y-6 shadow-[8px_8px_0px_0px_rgba(16,185,129,0.1)]">
+        <div className="flex items-center gap-3 border-b border-outline-variant pb-4">
+          <div className="w-10 h-10 bg-primary/10 border border-primary/30 flex items-center justify-center text-primary">
+            <Moon className="w-5 h-5" />
           </div>
           <div>
-            <h2 className="text-lg font-semibold text-white">Preferences</h2>
-            <p className="text-xs text-slate-400">
-              Customize your experience
-            </p>
+            <h2 className="text-lg font-bold text-on-surface uppercase tracking-widest">Interface Parameters</h2>
+            <p className="font-mono-label text-[10px] text-primary uppercase">Telemetry and Visuals</p>
           </div>
         </div>
 
-        {/* Dark Mode Toggle */}
-        <div className="flex items-center justify-between py-3 border-b border-white/5">
-          <div className="flex items-center gap-3">
-            <Moon className="w-4 h-4 text-slate-400" />
-            <div>
-              <p className="text-sm font-medium text-white">Dark Mode</p>
-              <p className="text-xs text-slate-500">
-                Toggle dark theme appearance
-              </p>
+        <div className="max-w-2xl space-y-4">
+          {/* Dark Mode Toggle */}
+          <div className="flex items-center justify-between p-4 bg-surface-container border border-outline-variant hover:border-primary/50 transition-colors">
+            <div className="flex items-center gap-4">
+              <Moon className="w-5 h-5 text-on-surface-variant" />
+              <div>
+                <p className="font-bold text-sm text-on-surface uppercase tracking-widest">Dark Protocol</p>
+                <p className="font-mono-label text-[10px] text-on-surface-variant mt-1 uppercase">Force brutalist dark theme rendering</p>
+              </div>
             </div>
-          </div>
-          <button
-            onClick={() => setDarkMode(!darkMode)}
-            className={cn(
-              "relative w-11 h-6 rounded-full transition-colors duration-300",
-              darkMode ? "bg-blue-600" : "bg-slate-700"
-            )}
-          >
-            <div
+            <button
+              onClick={() => setDarkMode(!darkMode)}
               className={cn(
-                "absolute top-0.5 w-5 h-5 rounded-full bg-white shadow-md transition-transform duration-300",
-                darkMode ? "translate-x-[22px]" : "translate-x-0.5"
+                "relative w-12 h-6 border transition-colors duration-300 rounded-none cursor-pointer",
+                darkMode ? "bg-primary border-primary" : "bg-surface-variant border-outline-variant"
               )}
-            />
-          </button>
-        </div>
+            >
+              <div
+                className={cn(
+                  "absolute top-0.5 w-4 h-4 bg-on-primary transition-transform duration-300 rounded-none",
+                  darkMode ? "translate-x-[26px]" : "translate-x-1 bg-on-surface-variant"
+                )}
+              />
+            </button>
+          </div>
 
-        {/* Notifications Toggle */}
-        <div className="flex items-center justify-between py-3">
-          <div className="flex items-center gap-3">
-            <Bell className="w-4 h-4 text-slate-400" />
-            <div>
-              <p className="text-sm font-medium text-white">Notifications</p>
-              <p className="text-xs text-slate-500">
-                Receive suggestions and activity updates
-              </p>
+          {/* Notifications Toggle */}
+          <div className="flex items-center justify-between p-4 bg-surface-container border border-outline-variant hover:border-primary/50 transition-colors">
+            <div className="flex items-center gap-4">
+              <Bell className="w-5 h-5 text-on-surface-variant" />
+              <div>
+                <p className="font-bold text-sm text-on-surface uppercase tracking-widest">Telemetry Alerts</p>
+                <p className="font-mono-label text-[10px] text-on-surface-variant mt-1 uppercase">Enable real-time push notifications</p>
+              </div>
             </div>
-          </div>
-          <button
-            onClick={() => setNotifications(!notifications)}
-            className={cn(
-              "relative w-11 h-6 rounded-full transition-colors duration-300",
-              notifications ? "bg-blue-600" : "bg-slate-700"
-            )}
-          >
-            <div
+            <button
+              onClick={() => setNotifications(!notifications)}
               className={cn(
-                "absolute top-0.5 w-5 h-5 rounded-full bg-white shadow-md transition-transform duration-300",
-                notifications ? "translate-x-[22px]" : "translate-x-0.5"
+                "relative w-12 h-6 border transition-colors duration-300 rounded-none cursor-pointer",
+                notifications ? "bg-primary border-primary" : "bg-surface-variant border-outline-variant"
               )}
-            />
-          </button>
+            >
+              <div
+                className={cn(
+                  "absolute top-0.5 w-4 h-4 bg-on-primary transition-transform duration-300 rounded-none",
+                  notifications ? "translate-x-[26px]" : "translate-x-1 bg-on-surface-variant"
+                )}
+              />
+            </button>
+          </div>
         </div>
       </motion.div>
 
       {/* Save Button */}
-      <motion.div variants={item} className="flex justify-end pb-8">
+      <motion.div variants={item} className="flex justify-end pt-4 pb-12">
         <button
           onClick={handleSave}
           className={cn(
-            "flex items-center gap-2 px-6 py-2.5 rounded-xl font-medium text-white",
-            "bg-gradient-to-r from-blue-600 to-purple-600",
-            "shadow-lg shadow-blue-500/20 hover:shadow-blue-500/40",
-            "transition-all duration-300 hover:-translate-y-0.5",
-            saved && "from-green-600 to-green-500"
+            "btn-primary flex items-center gap-2 px-8 py-4 font-bold uppercase tracking-widest transition-all",
+            saved && "bg-green-600 border-green-500 text-white shadow-none"
           )}
         >
           {saved ? (
             <>
-              <Check className="w-4 h-4" />
-              Saved!
+              <Check className="w-5 h-5" />
+              Configuration Saved
             </>
           ) : (
             <>
-              <Save className="w-4 h-4" />
-              Save Changes
+              <Save className="w-5 h-5" />
+              Apply Configuration
             </>
           )}
         </button>

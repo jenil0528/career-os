@@ -70,7 +70,7 @@ function TestimonialCard({
       transition={{
         duration: 0.7,
         delay: 0.15 * (index + 1),
-        ease: [0.33, 1, 0.68, 1] as const,
+        ease: [0.33, 1, 0.68, 1] as [number, number, number, number],
       }}
       className="perspective-container"
     >

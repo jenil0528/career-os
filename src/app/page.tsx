@@ -24,7 +24,7 @@ export default function Home() {
       opacity: 1, 
       y: 0, 
       filter: "blur(0px)",
-      transition: { duration: 1, ease: [0.16, 1, 0.3, 1] as const } 
+      transition: { duration: 1, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] } 
     }
   };
 
@@ -38,12 +38,12 @@ export default function Home() {
 
   const barAnim = {
     hidden: { scaleY: 0, originY: 1 },
-    visible: { scaleY: 1, transition: { duration: 1.2, ease: [0.16, 1, 0.3, 1] as const } }
+    visible: { scaleY: 1, transition: { duration: 1.2, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] } }
   };
 
   const barAnimH = {
     hidden: { scaleX: 0, originX: 0 },
-    visible: { scaleX: 1, transition: { duration: 1.2, ease: [0.16, 1, 0.3, 1] as const } }
+    visible: { scaleX: 1, transition: { duration: 1.2, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] } }
   };
 
   return (

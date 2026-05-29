@@ -131,7 +131,7 @@ const itemVariants = {
     opacity: 1,
     y: 0,
     rotateX: 0,
-    transition: { duration: 0.7, ease: [0.33, 1, 0.68, 1] as const },
+    transition: { duration: 0.7, ease: [0.33, 1, 0.68, 1] as [number, number, number, number] },
   },
 };
 
@@ -296,7 +296,7 @@ export default function Hero() {
                       <motion.div
                         initial={{ width: 0 }}
                         animate={{ width: "85%" }}
-                        transition={{ delay: 1.5, duration: 1.2, ease: [0.33, 1, 0.68, 1] as const }}
+                        transition={{ delay: 1.5, duration: 1.2, ease: [0.33, 1, 0.68, 1] as [number, number, number, number] }}
                         className="h-full rounded-full bg-green-500"
                       />
                     </div>
@@ -339,7 +339,7 @@ export default function Hero() {
                             <motion.div
                               initial={{ width: 0 }}
                               animate={{ width: `${skill.pct}%` }}
-                              transition={{ delay: 1.8, duration: 1, ease: [0.33, 1, 0.68, 1] as const }}
+                              transition={{ delay: 1.8, duration: 1, ease: [0.33, 1, 0.68, 1] as [number, number, number, number] }}
                               className={`h-full rounded-full ${skill.color}`}
                             />
                           </div>

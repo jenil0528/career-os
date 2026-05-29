@@ -63,7 +63,7 @@ export default function InterviewPreview() {
           <motion.div
             initial={{ opacity: 0, x: -40, rotateY: 10 }}
             animate={inView ? { opacity: 1, x: 0, rotateY: 0 } : {}}
-            transition={{ duration: 0.8, ease: [0.33, 1, 0.68, 1] as const }}
+            transition={{ duration: 0.8, ease: [0.33, 1, 0.68, 1] as [number, number, number, number] }}
             className="relative order-2 lg:order-1 perspective-container"
             onMouseMove={handleMouseMove}
             onMouseLeave={handleMouseLeave}
@@ -131,7 +131,7 @@ export default function InterviewPreview() {
                     key={i}
                     initial={{ opacity: 0, y: 15, scale: 0.95 }}
                     animate={inView ? { opacity: 1, y: 0, scale: 1 } : {}}
-                    transition={{ duration: 0.4, delay: 0.5 + i * 0.2, ease: [0.33, 1, 0.68, 1] as const }}
+                    transition={{ duration: 0.4, delay: 0.5 + i * 0.2, ease: [0.33, 1, 0.68, 1] as [number, number, number, number] }}
                     className={`flex gap-3 ${msg.role === "user" ? "flex-row-reverse" : ""}`}
                   >
                     <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${msg.role === "ai" ? "bg-purple-500/10 ring-1 ring-purple-500/20" : "bg-blue-500/10 ring-1 ring-blue-500/20"}`}>
@@ -168,7 +168,7 @@ export default function InterviewPreview() {
                       <motion.div
                         initial={{ width: 0 }}
                         animate={inView ? { width: `${item.score}%` } : {}}
-                        transition={{ duration: 1.2, delay: 1, ease: [0.33, 1, 0.68, 1] as const }}
+                        transition={{ duration: 1.2, delay: 1, ease: [0.33, 1, 0.68, 1] as [number, number, number, number] }}
                         className={`h-full rounded-full bg-gradient-to-r ${item.color}`}
                       />
                     </div>
@@ -182,7 +182,7 @@ export default function InterviewPreview() {
           <motion.div
             initial={{ opacity: 0, x: 40 }}
             animate={inView ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.7, delay: 0.2, ease: [0.33, 1, 0.68, 1] as const }}
+            transition={{ duration: 0.7, delay: 0.2, ease: [0.33, 1, 0.68, 1] as [number, number, number, number] }}
             className="order-1 lg:order-2"
           >
             <div className="mb-6 h-1 w-16 rounded-full bg-gradient-to-r from-purple-500 to-cyan-500" />
@@ -227,7 +227,7 @@ export default function InterviewPreview() {
                   key={item}
                   initial={{ opacity: 0, x: 20 }}
                   animate={inView ? { opacity: 1, x: 0 } : {}}
-                  transition={{ duration: 0.5, delay: 0.4 + i * 0.1, ease: [0.33, 1, 0.68, 1] as const }}
+                  transition={{ duration: 0.5, delay: 0.4 + i * 0.1, ease: [0.33, 1, 0.68, 1] as [number, number, number, number] }}
                   className="flex items-start gap-3 group"
                 >
                   <div className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-purple-500/10 ring-1 ring-purple-500/20 group-hover:ring-purple-500/40 transition-all">

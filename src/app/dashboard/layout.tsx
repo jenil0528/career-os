@@ -15,7 +15,7 @@ const NAV_ITEMS = [
 
 const BOTTOM_NAV_ITEMS = [
   { name: "Settings", href: "/dashboard/settings", icon: "settings" },
-  { name: "Support", href: "#", icon: "help" },
+  { name: "Support", href: "mailto:support@careeros.com", icon: "help" },
 ];
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
@@ -102,19 +102,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             <span className="font-headline-sm text-headline-sm font-black text-tertiary">Executive Terminal</span>
           </div>
           <div className="flex items-center gap-gutter">
-            <div className="relative hidden sm:flex items-center focus-within:border-primary border border-outline-variant h-8 px-density-regular bg-surface-container-lowest">
-              <input 
-                className="bg-transparent border-none p-0 font-body-sm text-body-sm text-primary focus:ring-0 w-48 placeholder:text-on-surface-variant" 
-                placeholder="Search..." 
-                type="text"
-              />
-              <span className="material-symbols-outlined text-[16px] text-on-surface-variant ml-unit">search</span>
-            </div>
-            
-            <button className="h-8 px-density-spacious bg-primary text-on-primary font-label-md text-label-md hover:bg-inverse-surface transition-colors">
-              Upgrade
-            </button>
-            
             <button className="text-on-surface-variant hover:text-primary transition-colors duration-150 flex items-center justify-center w-8 h-8">
               <span className="material-symbols-outlined">notifications</span>
             </button>

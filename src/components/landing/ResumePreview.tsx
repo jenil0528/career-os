@@ -119,7 +119,7 @@ export default function ResumePreview() {
           <motion.div
             initial={{ opacity: 0, x: -40 }}
             animate={inView ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.7, ease: [0.33, 1, 0.68, 1] as const }}
+            transition={{ duration: 0.7, ease: [0.33, 1, 0.68, 1] as [number, number, number, number] }}
           >
             <div className="mb-6 h-1 w-16 rounded-full bg-gradient-to-r from-blue-500 to-purple-500" />
 
@@ -143,7 +143,7 @@ export default function ResumePreview() {
                   key={feature.text}
                   initial={{ opacity: 0, x: -20 }}
                   animate={inView ? { opacity: 1, x: 0 } : {}}
-                  transition={{ duration: 0.5, delay: 0.2 + i * 0.1, ease: [0.33, 1, 0.68, 1] as const }}
+                  transition={{ duration: 0.5, delay: 0.2 + i * 0.1, ease: [0.33, 1, 0.68, 1] as [number, number, number, number] }}
                   className="flex items-start gap-3 group"
                 >
                   <div className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-blue-500/10 ring-1 ring-blue-500/20 group-hover:ring-blue-500/40 transition-all">
@@ -161,7 +161,7 @@ export default function ResumePreview() {
           <motion.div
             initial={{ opacity: 0, x: 40, rotateY: -10 }}
             animate={inView ? { opacity: 1, x: 0, rotateY: 0 } : {}}
-            transition={{ duration: 0.8, delay: 0.2, ease: [0.33, 1, 0.68, 1] as const }}
+            transition={{ duration: 0.8, delay: 0.2, ease: [0.33, 1, 0.68, 1] as [number, number, number, number] }}
             className="relative perspective-container"
             onMouseMove={handleMouseMove}
             onMouseLeave={handleMouseLeave}

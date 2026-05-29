@@ -11,8 +11,10 @@ const isClerkActive = !!process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY;
 interface MockUser {
   id: string;
   firstName: string;
+  lastName?: string;
   fullName: string;
   emailAddresses: { emailAddress: string }[];
+  primaryEmailAddress?: { emailAddress: string };
   imageUrl: string;
 }
 
