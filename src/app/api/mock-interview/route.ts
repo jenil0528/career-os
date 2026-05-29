@@ -149,8 +149,8 @@ export async function POST(request: NextRequest) {
     const openaiMessages: { role: "system" | "user" | "assistant"; content: string }[] = [
       { role: "system", content: systemPrompt },
       ...sanitizedMessages.map((m: any) => ({
-        role: m.role === "ai" ? "assistant" : "user",
-        content: m.content,
+        role: (m.role === "ai" ? "assistant" : "user") as "assistant" | "user",
+        content: m.content as string,
       })),
     ];
 
