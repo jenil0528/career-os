@@ -47,7 +47,6 @@ export async function POST(request: NextRequest) {
       let fileText = "";
       try {
         const pdf = new PDFParse({ data: buffer });
-        await pdf.load();
         const pdfData = await pdf.getText();
         fileText = pdfData.text;
       } catch (e) {
