@@ -3,7 +3,7 @@ import { DEMO_RESUME_ANALYSIS } from "@/lib/demo-data";
 import { RESUME_ANALYSIS_PROMPT } from "@/lib/prompts";
 import { getAIClient, parseAIResponse } from "@/lib/ai-client";
 // @ts-ignore
-import pdfParse from "pdf-parse";
+import { PDFParse } from "pdf-parse";
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 const ALLOWED_TYPES = ["application/pdf"];
@@ -46,7 +46,7 @@ export async function POST(request: NextRequest) {
       const buffer = Buffer.from(fileBuffer);
       let fileText = "";
       try {
-        const pdf = new pdfParse.PDFParse({ data: buffer });
+        const pdf = new PDFParse({ data: buffer });
         await pdf.load();
         const pdfData = await pdf.getText();
         fileText = pdfData.text;
