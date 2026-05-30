@@ -3,7 +3,9 @@ import { NextRequest } from "next/server";
 export async function getAIClient(request: NextRequest) {
   // 1. Get user key from headers, fallback to environment variable
   const userKey = request.headers.get("x-user-api-key");
-  const apiKey = userKey && userKey.trim() !== "" ? userKey.trim() : process.env.OPENAI_API_KEY;
+  let envKey = process.env.OPENAI_API_KEY || "";
+  envKey = envKey.trim().replace(/^["']|["']$/g, ''); // Remove spaces and quotes
+  const apiKey = userKey && userKey.trim() !== "" ? userKey.trim() : envKey;
 
   if (!apiKey) {
     return { openai: null, model: null, apiKey: null, isGemini: false };

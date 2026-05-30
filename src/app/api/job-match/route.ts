@@ -135,7 +135,7 @@ export async function POST(request: NextRequest) {
     } catch (apiError: any) {
       console.error("OpenAI API error:", apiError);
       return NextResponse.json(
-        { error: `AI processing failed: ${apiError.message || "Unknown error"}` },
+        { error: `AI processing failed: ${apiError.message || "Unknown error"} (Debug: model=${aiModel}, isGemini=${isGemini}, keyPrefix=${apiKey?.substring(0,4)})` },
         { status: 500 }
       );
     }
