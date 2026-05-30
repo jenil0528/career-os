@@ -2,8 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 import { DEMO_JOB_MATCH_RESULT } from "@/lib/demo-data";
 import { JOB_MATCH_PROMPT } from "@/lib/prompts";
 import { getAIClient, parseAIResponse } from "@/lib/ai-client";
-// @ts-ignore
-import { PDFParse } from "pdf-parse";
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 const ALLOWED_TYPES = ["application/pdf"];
@@ -69,6 +67,8 @@ export async function POST(request: NextRequest) {
     const buffer = Buffer.from(fileBuffer);
     let fileText = "";
     try {
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
+      const { PDFParse } = require("pdf-parse");
       const pdf = new PDFParse({ data: buffer });
       const pdfData = await pdf.getText();
       fileText = pdfData.text;
