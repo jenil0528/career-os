@@ -24,6 +24,10 @@ export async function getAIClient(request: NextRequest) {
   } else if (apiKey.startsWith("sk-") || apiKey.startsWith("proj-")) {
     // It's an OpenAI Key
     model = "gpt-4o-mini";
+  } else if (apiKey.startsWith("gsk_")) {
+    // It's a Groq Key (Free, super fast API)
+    openaiConfig.baseURL = "https://api.groq.com/openai/v1";
+    model = "llama-3.3-70b-versatile"; // Latest fast Llama 3 model on Groq
   } else if (apiKey.startsWith("nvapi-")) {
     // It's an NVIDIA NIM Key
     openaiConfig.baseURL = "https://integrate.api.nvidia.com/v1";

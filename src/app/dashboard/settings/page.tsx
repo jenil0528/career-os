@@ -162,7 +162,7 @@ export default function SettingsPage() {
               type={showApiKey ? "text" : "password"}
               value={apiKey}
               onChange={(e) => setApiKey(e.target.value)}
-              placeholder="sk-... or AIza... or nvapi-..."
+              placeholder="sk-... or AIza... or nvapi-... or gsk_..."
               className={cn(
                 "w-full px-4 py-3 pr-12 bg-surface-container-highest border border-outline-variant",
                 "text-on-surface placeholder:text-on-surface-variant/50",
