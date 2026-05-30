@@ -52,7 +52,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const { openai, model: aiModel, apiKey } = await getAIClient(request);
+    const { openai, model: aiModel, apiKey, isGemini } = await getAIClient(request);
 
     if (!openai || !apiKey) {
       return NextResponse.json(
@@ -90,7 +90,7 @@ export async function POST(request: NextRequest) {
           ],
           temperature: 0.7,
           max_tokens: 500,
-          response_format: { type: "json_object" },
+          ...(isGemini ? {} : { response_format: { type: "json_object" as const } }),
         });
 
         const analysisText = analysisCompletion.choices[0]?.message?.content;

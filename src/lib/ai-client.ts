@@ -6,19 +6,21 @@ export async function getAIClient(request: NextRequest) {
   const apiKey = userKey && userKey.trim() !== "" ? userKey.trim() : process.env.OPENAI_API_KEY;
 
   if (!apiKey) {
-    return { openai: null, model: null, apiKey: null };
+    return { openai: null, model: null, apiKey: null, isGemini: false };
   }
 
   const OpenAI = (await import("openai")).default;
   
   let openaiConfig: any = { apiKey };
   let model = "gemini-2.5-flash"; // Default
+  let isGemini = false;
 
   // 2. Smart Model Routing
   if (apiKey.startsWith("AIza") || apiKey.startsWith("AQ.")) {
     // It's a Google Gemini Key
     openaiConfig.baseURL = "https://generativelanguage.googleapis.com/v1beta/openai/";
     model = "gemini-2.5-flash";
+    isGemini = true;
   } else if (apiKey.startsWith("sk-") || apiKey.startsWith("proj-")) {
     // It's an OpenAI Key
     model = "gpt-4o-mini";
@@ -29,11 +31,12 @@ export async function getAIClient(request: NextRequest) {
   } else {
     // Fallback: Assume the system environment variable is configured for Gemini via OpenAI proxy
     openaiConfig.baseURL = "https://generativelanguage.googleapis.com/v1beta/openai/";
+    isGemini = true;
   }
 
   const openai = new OpenAI(openaiConfig);
 
-  return { openai, model, apiKey };
+  return { openai, model, apiKey, isGemini };
 }
 
 /**
