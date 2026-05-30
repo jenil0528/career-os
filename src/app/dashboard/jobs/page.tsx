@@ -335,8 +335,14 @@ export default function JobMatchPage() {
 
       const res = await fetch("/api/job-match", { method: "POST", body: formData, headers: customHeaders });
       if (!res.ok) {
-        const errData = await res.json();
-        throw new Error(errData.error || "Failed to analyze");
+        let errorMsg = "Failed to analyze";
+        try {
+          const errData = await res.json();
+          errorMsg = errData.error || errorMsg;
+        } catch {
+          errorMsg = `Server error (${res.status}). Please try again.`;
+        }
+        throw new Error(errorMsg);
       }
       const data: JobMatchResult = await res.json();
       setResult(data);

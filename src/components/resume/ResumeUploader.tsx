@@ -92,8 +92,19 @@ export default function ResumeUploader({
       });
 
       if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.error || "Analysis failed");
+        let errorMsg = "Analysis failed";
+        try {
+          const data = await response.json();
+          errorMsg = data.error || errorMsg;
+        } catch {
+          const text = await response.text().catch(() => "");
+          if (text.toLowerCase().includes("deploy")) {
+            errorMsg = "App is still deploying. Please wait a minute and try again.";
+          } else {
+            errorMsg = `Server error (${response.status}). Please try again.`;
+          }
+        }
+        throw new Error(errorMsg);
       }
 
       const analysis: ResumeAnalysis = await response.json();
