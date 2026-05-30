@@ -126,12 +126,12 @@ const containerVariants = {
 };
 
 const itemVariants = {
-  hidden: { opacity: 0, y: 40, rotateX: 15 },
+  hidden: { opacity: 0, y: 40, scale: 0.95 },
   visible: {
     opacity: 1,
     y: 0,
-    rotateX: 0,
-    transition: { duration: 0.7, ease: [0.33, 1, 0.68, 1] as [number, number, number, number] },
+    scale: 1,
+    transition: { type: "spring", stiffness: 100, damping: 20, mass: 1 },
   },
 };
 
@@ -231,7 +231,7 @@ export default function Hero() {
             {stats.map((stat) => (
               <div
                 key={stat.label}
-                className={`bg-surface border border-outline-variant rounded-2xl p-4 shadow-sm hover:shadow-md transition-shadow`}
+                className="bg-surface border border-outline-variant rounded-2xl p-4 shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-1 hover:border-primary/30"
               >
                 <stat.icon className={`h-5 w-5 text-primary mb-2 mx-auto`} />
                 <span className="block text-2xl font-bold text-on-surface sm:text-3xl font-[family-name:var(--font-space-grotesk)]">

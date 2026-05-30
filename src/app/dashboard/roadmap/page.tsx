@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useUserCompat as useUser } from "@/lib/auth-shim";
 import { Loader2, Play, Search } from "lucide-react";
 import type { CareerRoadmap, RoadmapPhase } from "@/types";
+import { motion } from "motion/react";
 
 export default function RoadmapPage() {
   const { isLoaded } = useUser();
@@ -241,10 +242,16 @@ export default function RoadmapPage() {
               ))}
               
               <div className="mt-auto p-density-spacious border-t border-outline-variant bg-surface-container-lowest">
-                <button className="w-full py-2 border border-outline-variant text-on-surface font-label-md text-label-md hover:bg-surface-container-low transition-colors flex items-center justify-center gap-2">
-                  View Full Catalog
-                  <span className="material-symbols-outlined" style={{ fontSize: "16px" }}>arrow_forward</span>
-                </button>
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={() => alert("Full catalog coming soon!")}
+                  className="group relative overflow-hidden w-full py-3 rounded-xl border border-primary/50 bg-primary/5 text-primary font-semibold text-label-md transition-all duration-300 shadow-[0_0_15px_rgba(59,130,246,0.2)] hover:shadow-[0_0_25px_rgba(59,130,246,0.4)] hover:border-primary hover:bg-primary/10 flex items-center justify-center gap-2 cursor-pointer"
+                >
+                  <div className="absolute inset-0 -translate-x-full group-hover:animate-[shimmer_1.5s_infinite] bg-gradient-to-r from-transparent via-primary/20 to-transparent z-0" />
+                  <span className="relative z-10 tracking-wide">View Full Catalog</span>
+                  <span className="material-symbols-outlined relative z-10 group-hover:translate-x-1 transition-transform" style={{ fontSize: "16px" }}>arrow_forward</span>
+                </motion.button>
               </div>
             </div>
           </section>

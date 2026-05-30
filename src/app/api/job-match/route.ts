@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { DEMO_JOB_MATCH_RESULT } from "@/lib/demo-data";
 import { JOB_MATCH_PROMPT } from "@/lib/prompts";
 import { getAIClient, parseAIResponse } from "@/lib/ai-client";
+// @ts-ignore
+import pdfParse from "pdf-parse";
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 const ALLOWED_TYPES = ["application/pdf"];
@@ -64,7 +66,16 @@ export async function POST(request: NextRequest) {
 
     // Real mode: Extract text from the uploaded file
     const fileBuffer = await file.arrayBuffer();
-    const fileText = new TextDecoder("utf-8").decode(fileBuffer);
+    const buffer = Buffer.from(fileBuffer);
+    let fileText = "";
+    try {
+      const pdf = new pdfParse.PDFParse({ data: buffer });
+      await pdf.load();
+      const pdfData = await pdf.getText();
+      fileText = pdfData.text;
+    } catch (e) {
+      console.error("PDF parse error:", e);
+    }
 
     // Use a cleaned version of the text (remove non-printable chars)
     const cleanedText = fileText

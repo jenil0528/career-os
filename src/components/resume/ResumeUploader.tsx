@@ -234,26 +234,33 @@ export default function ResumeUploader({
             exit={{ opacity: 0, y: 10 }}
             className="mt-6 flex justify-center"
           >
-            <button
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
               onClick={handleUpload}
               disabled={isUploading}
               className={cn(
-                "btn-primary flex items-center gap-2 px-8 py-3 rounded-xl text-base font-semibold transition-all",
+                "relative overflow-hidden group btn-primary flex items-center gap-2 px-8 py-3 rounded-xl text-base font-semibold transition-all duration-300 border border-blue-400/50 hover:border-blue-300 shadow-[0_0_15px_rgba(59,130,246,0.3)] hover:shadow-[0_0_25px_rgba(59,130,246,0.5)]",
                 isUploading && "opacity-80 cursor-not-allowed"
               )}
             >
-              {isUploading ? (
-                <>
-                  <Loader2 className="w-5 h-5 animate-spin" />
-                  Analyzing Resume...
-                </>
-              ) : (
-                <>
-                  <CheckCircle className="w-5 h-5" />
-                  Analyze Resume
-                </>
-              )}
-            </button>
+              {/* Shimmer effect */}
+              <div className="absolute inset-0 -translate-x-full group-hover:animate-[shimmer_1.5s_infinite] bg-gradient-to-r from-transparent via-white/20 to-transparent z-0" />
+              
+              <div className="relative z-10 flex items-center gap-2">
+                {isUploading ? (
+                  <>
+                    <Loader2 className="w-5 h-5 animate-spin" />
+                    Analyzing Resume...
+                  </>
+                ) : (
+                  <>
+                    <CheckCircle className="w-5 h-5 drop-shadow-sm" />
+                    Analyze Resume
+                  </>
+                )}
+              </div>
+            </motion.button>
           </motion.div>
         )}
       </AnimatePresence>

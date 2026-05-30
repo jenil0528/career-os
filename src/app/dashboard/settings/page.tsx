@@ -196,30 +196,7 @@ export default function SettingsPage() {
         </div>
 
         <div className="max-w-2xl space-y-4">
-          {/* Dark Mode Toggle */}
-          <div className="flex items-center justify-between p-4 bg-surface-container border border-outline-variant hover:border-primary/50 transition-colors">
-            <div className="flex items-center gap-4">
-              <Moon className="w-5 h-5 text-on-surface-variant" />
-              <div>
-                <p className="font-bold text-sm text-on-surface uppercase tracking-widest">Dark Protocol</p>
-                <p className="font-mono-label text-[10px] text-on-surface-variant mt-1 uppercase">Force brutalist dark theme rendering</p>
-              </div>
-            </div>
-            <button
-              onClick={toggleTheme}
-              className={cn(
-                "relative w-12 h-6 border transition-colors duration-300 rounded-none cursor-pointer",
-                isDarkMode ? "bg-primary border-primary" : "bg-surface-variant border-outline-variant"
-              )}
-            >
-              <div
-                className={cn(
-                  "absolute top-0.5 w-4 h-4 bg-on-primary transition-transform duration-300 rounded-none",
-                  isDarkMode ? "translate-x-[26px]" : "translate-x-1 bg-on-surface-variant"
-                )}
-              />
-            </button>
-          </div>
+
 
           {/* Notifications Toggle */}
           <div className="flex items-center justify-between p-4 bg-surface-container border border-outline-variant hover:border-primary/50 transition-colors">
@@ -233,15 +210,21 @@ export default function SettingsPage() {
             <button
               onClick={() => setNotifications(!notifications)}
               className={cn(
-                "relative w-12 h-6 border transition-colors duration-300 rounded-none cursor-pointer",
-                notifications ? "bg-primary border-primary" : "bg-surface-variant border-outline-variant"
+                "relative flex h-6 w-12 cursor-pointer items-center rounded-full p-1 transition-all duration-300 border",
+                notifications ? "bg-primary border-primary shadow-[0_0_15px_rgba(59,130,246,0.4)]" : "bg-surface-container-highest border-outline-variant"
               )}
             >
-              <div
-                className={cn(
-                  "absolute top-0.5 w-4 h-4 bg-on-primary transition-transform duration-300 rounded-none",
-                  notifications ? "translate-x-[26px]" : "translate-x-1 bg-on-surface-variant"
-                )}
+              <motion.div
+                className="h-4 w-4 rounded-full bg-white shadow-sm"
+                layout
+                transition={{
+                  type: "spring",
+                  stiffness: 700,
+                  damping: 30,
+                }}
+                animate={{
+                  x: notifications ? 22 : 0,
+                }}
               />
             </button>
           </div>

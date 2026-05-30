@@ -454,10 +454,15 @@ export default function JobMatchPage() {
                     Let our AI analyze your skills and match you with the best career opportunities automatically.
                   </p>
                   <div>
-                    <div className="inline-flex items-center gap-2 btn-primary rounded-xl px-6 py-3 text-sm font-semibold">
-                      <FileText className="h-4 w-4" />
-                      Choose PDF File
-                    </div>
+                    <motion.div 
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      className="inline-flex items-center gap-2 bg-primary/10 text-primary border border-primary/40 hover:bg-primary hover:text-on-primary hover:border-primary rounded-xl px-6 py-3 text-sm font-semibold transition-colors duration-300 shadow-[0_0_15px_rgba(var(--primary-rgb),0.1)] hover:shadow-[0_0_20px_rgba(var(--primary-rgb),0.4)] relative overflow-hidden group"
+                    >
+                      <div className="absolute inset-0 -translate-x-full group-hover:animate-[shimmer_1.5s_infinite] bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+                      <FileText className="h-4 w-4 relative z-10" />
+                      <span className="relative z-10">Choose PDF File</span>
+                    </motion.div>
                   </div>
                   <input
                     id="job-resume-input"
@@ -500,13 +505,15 @@ export default function JobMatchPage() {
                   
                   <div className="flex flex-wrap justify-center gap-2">
                     {["Frontend", "Backend", "AI", "Remote"].map(tag => (
-                      <button
+                      <motion.button
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
                         key={tag}
                         onClick={() => setSearchQuery(tag)}
-                        className="px-3 py-1.5 text-xs font-semibold rounded-lg bg-surface-variant text-on-surface-variant hover:bg-surface-container-highest transition-colors"
+                        className="px-3 py-1.5 text-xs font-semibold rounded-lg bg-surface-variant text-on-surface-variant hover:bg-surface-container-highest hover:text-on-surface transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-outline-variant"
                       >
                         {tag}
-                      </button>
+                      </motion.button>
                     ))}
                   </div>
                 </div>
@@ -543,18 +550,20 @@ export default function JobMatchPage() {
                         <Filter className="h-4 w-4" /> Filter:
                       </div>
                       {["all", "Remote", "Hybrid", "Onsite"].map((mode) => (
-                        <button
+                        <motion.button
+                          whileHover={{ scale: 1.05 }}
+                          whileTap={{ scale: 0.95 }}
                           key={mode}
                           onClick={() => setFilterWorkMode(mode)}
                           className={cn(
-                            "px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer",
+                            "px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-300 cursor-pointer border",
                             filterWorkMode === mode
-                              ? "bg-primary text-on-primary shadow-sm"
-                              : "bg-surface-variant text-on-surface-variant hover:bg-surface-container-highest hover:text-on-surface"
+                              ? "bg-primary text-on-primary border-primary shadow-md"
+                              : "bg-surface-variant text-on-surface-variant border-transparent hover:bg-surface-container-highest hover:text-on-surface hover:border-outline-variant shadow-sm hover:shadow-md"
                           )}
                         >
                           {mode === "all" ? "All Modes" : mode}
-                        </button>
+                        </motion.button>
                       ))}
                     </div>
                   </div>
@@ -577,32 +586,114 @@ export default function JobMatchPage() {
           )}
 
           {isLoading && (
-            <motion.div key="loading" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="max-w-2xl mx-auto text-center py-20">
-              <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-blue-500/20 to-purple-500/10 mx-auto mb-6 flex items-center justify-center animate-pulse-glow">
-                <Sparkles className="w-10 h-10 text-blue-400 animate-spin" style={{ animationDuration: "3s" }} />
+            <motion.div key="loading" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0, scale: 0.95 }} transition={{ duration: 0.5 }} className="max-w-2xl mx-auto text-center py-16 relative">
+              
+              {/* Document Scanning Animation */}
+              <div className="relative w-24 h-32 mx-auto mb-12 perspective-1000">
+                {/* Document Base */}
+                <motion.div 
+                  className="absolute inset-0 bg-surface-container-lowest border border-outline-variant rounded-xl overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.5)] shadow-blue-500/20"
+                  initial={{ rotateY: 90, scale: 0.8 }}
+                  animate={{ rotateY: 0, scale: 1 }}
+                  transition={{ duration: 0.8, type: "spring", damping: 15 }}
+                >
+                  {/* Mock text lines inside document */}
+                  <div className="p-4 space-y-3 opacity-30">
+                    <div className="h-2 bg-on-surface-variant rounded-full w-3/4"></div>
+                    <div className="h-2 bg-on-surface-variant rounded-full w-full"></div>
+                    <div className="h-2 bg-on-surface-variant rounded-full w-5/6"></div>
+                    <div className="h-2 bg-on-surface-variant rounded-full w-full mt-6"></div>
+                    <div className="h-2 bg-on-surface-variant rounded-full w-2/3"></div>
+                  </div>
+
+                  {/* Scanning Laser */}
+                  <motion.div
+                    className="absolute left-0 right-0 h-[2px] bg-blue-500 shadow-[0_0_15px_rgba(59,130,246,1)] z-10"
+                    animate={{ top: ["0%", "100%", "0%"] }}
+                    transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
+                  />
+                  {/* Laser trailing glow */}
+                  <motion.div
+                    className="absolute left-0 right-0 h-16 bg-gradient-to-b from-blue-500/30 to-transparent z-0 pointer-events-none"
+                    animate={{ top: ["-16%", "100%", "-16%"] }}
+                    transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
+                  />
+                </motion.div>
+                
+                {/* Floating particles (AI processing bits) */}
+                {[...Array(6)].map((_, i) => (
+                  <motion.div
+                    key={i}
+                    className="absolute w-1.5 h-1.5 bg-cyan-400 rounded-full blur-[1px]"
+                    initial={{ opacity: 0, x: 0, y: 0, scale: 0 }}
+                    animate={{ 
+                      opacity: [0, 1, 0],
+                      x: [0, (Math.random() - 0.5) * 120],
+                      y: [0, -60 - Math.random() * 60],
+                      scale: [0, 1.5, 0]
+                    }}
+                    transition={{ duration: 2, repeat: Infinity, delay: i * 0.3 }}
+                    style={{ left: "50%", top: "50%" }}
+                  />
+                ))}
               </div>
-              <h3 className="text-2xl font-bold text-on-surface mb-3 font-[family-name:var(--font-space-grotesk)]">
-                Analyzing Your Career DNA...
+
+              <h3 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500 mb-4 font-[family-name:var(--font-space-grotesk)] drop-shadow-sm">
+                Initializing Career Matrix...
               </h3>
-              <p className="text-on-surface-variant text-sm mb-8">Extracting skills • Matching with 7+ roles • Building recommendations</p>
-              <div className="space-y-3 max-w-md mx-auto">
-                {["Parsing resume content", "Extracting skills & technologies", "Matching against job roles", "Calculating skill gaps", "Generating AI recommendations"].map((step, i) => (
+              <p className="text-on-surface-variant text-xs mb-12 uppercase tracking-widest font-mono-label opacity-80">
+                Extracting topology <span className="text-primary mx-2">•</span> Synthesizing matrices
+              </p>
+              
+              {/* Sequential Steps Timeline */}
+              <div className="space-y-0 max-w-[320px] mx-auto text-left relative">
+                {["Deconstructing PDF vectors", "Extracting skill typologies", "Correlating with live market data", "Calculating trajectory gaps", "Generating strategic recommendations"].map((step, i) => (
                   <motion.div
                     key={step}
-                    initial={{ opacity: 0, x: -20 }}
+                    initial={{ opacity: 0.4, x: -10 }}
                     animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: i * 0.4 }}
-                    className="flex items-center gap-3 text-sm text-on-surface-variant"
+                    transition={{ delay: i * 0.6 }}
+                    className="flex items-start gap-4 relative pb-6 last:pb-0"
                   >
+                    {/* Connecting line (except last) */}
+                    {i !== 4 && (
+                      <div className="absolute left-[15px] top-[30px] bottom-0 w-[2px] bg-outline-variant overflow-hidden z-0">
+                        <motion.div
+                          className="w-full bg-blue-500"
+                          initial={{ height: "0%" }}
+                          animate={{ height: "100%" }}
+                          transition={{ delay: i * 0.6 + 0.4, duration: 0.6, ease: "linear" }}
+                        />
+                      </div>
+                    )}
+                    
+                    {/* Icon Container */}
                     <motion.div
-                      initial={{ scale: 0 }}
-                      animate={{ scale: 1 }}
-                      transition={{ delay: i * 0.4 + 0.2 }}
-                      className="w-6 h-6 rounded-full bg-blue-500/20 flex items-center justify-center shrink-0"
+                      initial={{ backgroundColor: "var(--surface-container)", borderColor: "var(--outline-variant)", boxShadow: "0 0 0 rgba(59,130,246,0)" }}
+                      animate={{ backgroundColor: "rgba(59, 130, 246, 0.1)", borderColor: "rgba(59, 130, 246, 0.4)", boxShadow: "0 0 15px rgba(59,130,246,0.2)" }}
+                      transition={{ delay: i * 0.6 + 0.3 }}
+                      className="w-8 h-8 rounded-full border border-outline-variant bg-surface-container flex items-center justify-center shrink-0 relative z-10 transition-colors duration-500"
                     >
-                      <CheckCircle2 className="h-3.5 w-3.5 text-blue-400" />
+                      <motion.div
+                        initial={{ scale: 0 }}
+                        animate={{ scale: 1 }}
+                        transition={{ delay: i * 0.6 + 0.4, type: "spring" }}
+                      >
+                        <CheckCircle2 className="h-4 w-4 text-blue-400 drop-shadow-[0_0_8px_rgba(59,130,246,0.8)]" />
+                      </motion.div>
                     </motion.div>
-                    {step}
+                    
+                    {/* Text Label */}
+                    <div className="pt-1.5">
+                      <motion.span
+                        initial={{ color: "var(--on-surface-variant)" }}
+                        animate={{ color: "var(--on-surface)" }}
+                        transition={{ delay: i * 0.6 + 0.3 }}
+                        className="text-sm font-semibold"
+                      >
+                        {step}
+                      </motion.span>
+                    </div>
                   </motion.div>
                 ))}
               </div>
@@ -634,19 +725,21 @@ export default function JobMatchPage() {
                 {tabs.map((tab) => {
                   const TabIcon = tab.icon;
                   return (
-                    <button
+                    <motion.button
+                      whileHover={{ scale: 1.02, y: -2 }}
+                      whileTap={{ scale: 0.98 }}
                       key={tab.id}
                       onClick={() => setActiveTab(tab.id)}
                       className={cn(
-                        "flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium transition-all cursor-pointer",
+                        "flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-300 cursor-pointer shadow-sm hover:shadow-md",
                         activeTab === tab.id
-                          ? "bg-primary/10 text-primary border border-primary/30"
-                          : "bg-surface-variant text-on-surface-variant border border-outline-variant hover:bg-surface-container hover:text-on-surface"
+                          ? "bg-primary/10 text-primary border border-primary/30 shadow-[0_0_15px_rgba(var(--primary-rgb),0.2)]"
+                          : "bg-surface-variant text-on-surface-variant border border-transparent hover:border-outline-variant hover:bg-surface-container hover:text-on-surface"
                       )}
                     >
                       <TabIcon className="h-4 w-4" />
                       {tab.label}
-                    </button>
+                    </motion.button>
                   );
                 })}
               </div>
@@ -678,34 +771,38 @@ export default function JobMatchPage() {
                           <Filter className="h-4 w-4" /> Filter:
                         </div>
                       {["all", "Remote", "Hybrid", "Onsite"].map((mode) => (
-                        <button
+                        <motion.button
+                          whileHover={{ scale: 1.05 }}
+                          whileTap={{ scale: 0.95 }}
                           key={mode}
                           onClick={() => setFilterWorkMode(mode)}
                           className={cn(
-                            "px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer",
+                            "px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-300 cursor-pointer border",
                             filterWorkMode === mode
-                              ? "bg-primary text-on-primary shadow-sm"
-                              : "bg-surface-variant text-on-surface-variant hover:bg-surface-container-highest hover:text-on-surface"
+                              ? "bg-primary text-on-primary border-primary shadow-md"
+                              : "bg-surface-variant text-on-surface-variant border-transparent hover:bg-surface-container-highest hover:text-on-surface hover:border-outline-variant shadow-sm hover:shadow-md"
                           )}
                         >
                           {mode === "all" ? "All Modes" : mode}
-                        </button>
+                        </motion.button>
                       ))}
                       <div className="ml-auto flex items-center gap-2 text-sm text-on-surface-variant">
                         Sort:
                         {(["match", "readiness"] as const).map((s) => (
-                          <button
+                          <motion.button
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
                             key={s}
                             onClick={() => setSortBy(s)}
                             className={cn(
-                              "px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer capitalize",
+                              "px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-300 cursor-pointer capitalize border",
                               sortBy === s
-                                ? "bg-primary text-on-primary shadow-sm"
-                                : "bg-surface-variant text-on-surface-variant hover:bg-surface-container-highest hover:text-on-surface"
+                                ? "bg-primary text-on-primary border-primary shadow-md"
+                                : "bg-surface-variant text-on-surface-variant border-transparent hover:bg-surface-container-highest hover:text-on-surface hover:border-outline-variant shadow-sm hover:shadow-md"
                             )}
                           >
                             {s === "match" ? "Match %" : "Interview Ready"}
-                          </button>
+                          </motion.button>
                         ))}
                       </div>
                       </div>

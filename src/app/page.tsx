@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useUserCompat } from "@/lib/auth-shim";
 import { motion } from "motion/react";
+import ThemeToggle from "@/components/shared/ThemeToggle";
 
 export default function Home() {
   const { isLoaded, user } = useUserCompat();
@@ -57,6 +58,9 @@ export default function Home() {
             </motion.span>
           </motion.div>
           <motion.div initial="hidden" animate="visible" variants={staggerContainer} className="flex items-center gap-density-regular">
+            <motion.div variants={fadeUp} className="hidden md:block mr-2">
+              <ThemeToggle />
+            </motion.div>
             <motion.div variants={fadeUp}>
               <Link href="/sign-in" className="hidden md:flex items-center justify-center px-density-spacious py-density-regular bg-transparent border border-outline-variant text-primary font-label-md text-label-md hover:bg-surface-container-low transition-colors">
                 Sign In

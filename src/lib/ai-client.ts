@@ -35,3 +35,52 @@ export async function getAIClient(request: NextRequest) {
 
   return { openai, model, apiKey };
 }
+
+/**
+ * A robust JSON parser for AI responses.
+ * It removes markdown code blocks and attempts to extract the JSON object/array from surrounding text.
+ */
+export function parseAIResponse(text: string): any {
+  if (!text) throw new Error("Empty AI response");
+
+  let cleanText = text.trim();
+
+  // 1. Remove markdown code blocks
+  if (cleanText.includes("```")) {
+    const match = cleanText.match(/```(?:json)?\s*([\s\S]*?)\s*```/i);
+    if (match && match[1]) {
+      cleanText = match[1].trim();
+    } else {
+      // Fallback: just strip the backticks
+      cleanText = cleanText.replace(/```json/gi, "").replace(/```/g, "").trim();
+    }
+  }
+
+  // 2. Try to find the first { or [ and last } or ]
+  const firstCurly = cleanText.indexOf('{');
+  const firstSquare = cleanText.indexOf('[');
+  const lastCurly = cleanText.lastIndexOf('}');
+  const lastSquare = cleanText.lastIndexOf(']');
+
+  let startIndex = -1;
+  let endIndex = -1;
+
+  if (firstCurly !== -1 && (firstSquare === -1 || firstCurly < firstSquare)) {
+    startIndex = firstCurly;
+    endIndex = lastCurly;
+  } else if (firstSquare !== -1) {
+    startIndex = firstSquare;
+    endIndex = lastSquare;
+  }
+
+  if (startIndex !== -1 && endIndex !== -1 && endIndex > startIndex) {
+    cleanText = cleanText.substring(startIndex, endIndex + 1);
+  }
+
+  try {
+    return JSON.parse(cleanText);
+  } catch (error) {
+    console.error("Failed to parse cleaned AI response:", cleanText);
+    throw new Error("Invalid JSON format from AI");
+  }
+}

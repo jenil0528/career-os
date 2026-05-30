@@ -2,75 +2,59 @@
 
 import { useTheme } from "./ThemeProvider";
 import { motion } from "motion/react";
-import { Sparkles, Briefcase } from "lucide-react";
+import { Moon, Sun } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export default function ThemeToggle({ className }: { className?: string }) {
   const { theme, toggleTheme } = useTheme();
-  const isCyber = theme === "cyber";
+  const isDark = theme === "cyber";
 
   return (
     <button
       onClick={toggleTheme}
       className={cn(
-        "relative flex items-center p-1 rounded-lg cursor-pointer transition-colors duration-500 shadow-inner",
-        isCyber ? "bg-[#020617] border border-blue-500/30" : "bg-slate-200 border border-slate-300",
+        "relative flex items-center p-1 rounded-full cursor-pointer transition-colors duration-500 shadow-inner overflow-hidden",
+        isDark ? "bg-slate-800 border border-slate-700" : "bg-slate-200 border border-slate-300",
         className
       )}
-      style={{ width: "180px", height: "36px" }}
+      style={{ width: "64px", height: "32px" }}
       aria-label="Toggle theme mode"
     >
       {/* Sliding Thumb */}
       <motion.div
         className={cn(
-          "absolute top-1 bottom-1 w-[85px] rounded-md shadow-sm",
-          isCyber ? "bg-slate-800" : "bg-white"
+          "absolute top-[3px] bottom-[3px] w-[24px] rounded-full shadow-md z-10 flex items-center justify-center",
+          isDark ? "bg-blue-500" : "bg-white"
         )}
         initial={false}
         animate={{
-          x: isCyber ? 87 : 0,
-          boxShadow: isCyber 
-            ? "0 0 15px rgba(59, 130, 246, 0.4), inset 0 1px 0 rgba(255,255,255,0.1)" 
-            : "0 2px 8px rgba(0,0,0,0.1)"
+          x: isDark ? 32 : 0,
         }}
         transition={{ 
           type: "spring", 
-          stiffness: 500, 
-          damping: 35,
-          mass: 0.8
+          stiffness: 400, 
+          damping: 25,
+          mass: 1
         }}
-      />
+      >
+        {/* Icon inside thumb */}
+        <motion.div
+          initial={false}
+          animate={{ rotate: isDark ? 360 : 0 }}
+          transition={{ duration: 0.5, type: "spring" }}
+        >
+          {isDark ? (
+            <Moon className="w-3.5 h-3.5 text-white" />
+          ) : (
+            <Sun className="w-3.5 h-3.5 text-amber-500" />
+          )}
+        </motion.div>
+      </motion.div>
       
-      {/* Exec Option */}
-      <div className="relative z-10 flex flex-1 items-center justify-center gap-1.5 text-[10px] font-bold uppercase tracking-wider transition-colors duration-300 whitespace-nowrap">
-         <span className={cn(
-           "transition-colors duration-300", 
-           !isCyber ? "text-slate-800" : "text-slate-500"
-         )}>
-           <Briefcase className="w-3.5 h-3.5" />
-         </span>
-         <span className={cn(
-           "transition-colors duration-300 mt-[1px]", 
-           !isCyber ? "text-slate-800" : "text-slate-500"
-         )}>
-           Exec
-         </span>
-      </div>
-
-      {/* Cyber Option */}
-      <div className="relative z-10 flex flex-1 items-center justify-center gap-1.5 text-[10px] font-bold uppercase tracking-wider transition-colors duration-300 whitespace-nowrap">
-         <span className={cn(
-           "transition-colors duration-300", 
-           isCyber ? "text-blue-400" : "text-slate-500"
-         )}>
-           <Sparkles className={cn("w-3.5 h-3.5", isCyber && "animate-pulse")} />
-         </span>
-         <span className={cn(
-           "transition-colors duration-300 mt-[1px]", 
-           isCyber ? "text-blue-400" : "text-slate-500"
-         )}>
-           Cyber
-         </span>
+      {/* Background Icons (visible when thumb slides away) */}
+      <div className="relative z-0 flex w-full justify-between px-2">
+         <Sun className={cn("w-3.5 h-3.5 transition-opacity duration-300", isDark ? "opacity-50 text-slate-400" : "opacity-0")} />
+         <Moon className={cn("w-3.5 h-3.5 transition-opacity duration-300", !isDark ? "opacity-50 text-slate-500" : "opacity-0")} />
       </div>
     </button>
   );

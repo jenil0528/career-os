@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useUserCompat as useUser, UserButtonCompat as UserButton } from "@/lib/auth-shim";
+import ThemeToggle from "@/components/shared/ThemeToggle";
 
 const NAV_ITEMS = [
   { name: "Dashboard", href: "/dashboard", icon: "dashboard" },
@@ -108,6 +109,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             <span className="font-headline-sm text-headline-sm font-black text-tertiary">Executive Terminal</span>
           </div>
           <div className="flex items-center gap-gutter">
+            <ThemeToggle />
+            
             <button className="text-on-surface-variant hover:text-primary transition-colors duration-150 flex items-center justify-center w-8 h-8">
               <span className="material-symbols-outlined">notifications</span>
             </button>
